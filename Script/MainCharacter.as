@@ -4,10 +4,6 @@ class AMainCharacter:AFPS_NetworkCharacter
     UCameraComponent Camera;
     default Camera.bUsePawnControlRotation = true;
 
-
-
-
-
     UPROPERTY()
     UClass Weapon_AR4;
 
@@ -27,7 +23,7 @@ class AMainCharacter:AFPS_NetworkCharacter
         }
         
     }
-    //初始绘制枪的蓝图
+ //初始绘制枪的蓝图
     UFUNCTION(BlueprintEvent)
     void SetWeaponBP()
     {
@@ -35,6 +31,9 @@ class AMainCharacter:AFPS_NetworkCharacter
         SpawnGun.ActorScale3D=FVector(1,1,1);
         SpawnGun.AttachToComponent(Mesh,n"Weapon_Attach",EAttachmentRule::KeepRelative,EAttachmentRule::KeepRelative,EAttachmentRule::KeepRelative,true);
         
+        
     }
+
+    
 
 }

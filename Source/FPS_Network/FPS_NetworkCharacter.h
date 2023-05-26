@@ -18,8 +18,8 @@ class AFPS_NetworkCharacter : public ACharacter
 	//class USpringArmComponent* CameraBoom;
 
 	/** Follow camera */
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	//class UCameraComponent* FollowCamera;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* FollowCamera;
 	
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -40,7 +40,7 @@ class AFPS_NetworkCharacter : public ACharacter
 public:
 	AFPS_NetworkCharacter();
 
-
+	
 
 protected:
 
@@ -57,6 +57,8 @@ protected:
 	
 	// To add mapping context
 	virtual void BeginPlay();
+
+
 
 public:
 	/** Returns CameraBoom subobject **/
