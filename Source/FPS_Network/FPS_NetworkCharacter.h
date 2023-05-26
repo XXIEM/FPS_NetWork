@@ -39,7 +39,8 @@ class AFPS_NetworkCharacter : public ACharacter
 
 public:
 	AFPS_NetworkCharacter();
-	
+
+
 
 protected:
 

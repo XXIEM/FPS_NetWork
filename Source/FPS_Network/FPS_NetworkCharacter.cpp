@@ -51,6 +51,7 @@ AFPS_NetworkCharacter::AFPS_NetworkCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
+
 void AFPS_NetworkCharacter::BeginPlay()
 {
 	// Call the base class  

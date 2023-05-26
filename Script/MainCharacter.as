@@ -4,7 +4,10 @@ class AMainCharacter:AFPS_NetworkCharacter
     UCameraComponent Camera;
     default Camera.bUsePawnControlRotation = true;
 
-    
+
+
+
+
     UPROPERTY()
     UClass Weapon_AR4;
 
