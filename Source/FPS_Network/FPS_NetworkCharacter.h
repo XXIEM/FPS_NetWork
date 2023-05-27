@@ -37,6 +37,18 @@ class AFPS_NetworkCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	//** Aim Input Action */
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = Input,meta = (AllowPrivateAccess = "true"))
+	class UInputAction* AimAction;
+
+	/** Sprint Input Action */
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = Input,meta = (AllowPrivateAccess = "true"))
+	class UInputAction* SprintAction;
+
+	//** Chouch/Slide Input Action */
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = Input,meta = (AllowPrivateAccess = "true"))
+	class UInputAction* CrouchSLideAction;
+	
 public:
 	AFPS_NetworkCharacter();
 
@@ -49,7 +61,27 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-			
+
+	/** Called for Aiming input */
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartAim();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void EndAim();
+
+	/** Called for Chouch/Slide input */
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartCrouchSlide();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void EndcrouchSlide();
+
+	/** Called for Sprint input */
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartSprint();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void EndSprint();
 
 protected:
 	// APawn interface

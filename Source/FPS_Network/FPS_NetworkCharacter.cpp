@@ -88,6 +88,17 @@ void AFPS_NetworkCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AFPS_NetworkCharacter::Look);
 
+		//Aim
+		EnhancedInputComponent->BindAction(AimAction,ETriggerEvent::Started,this,&AFPS_NetworkCharacter::StartAim);
+		EnhancedInputComponent->BindAction(AimAction,ETriggerEvent::Canceled,this,&AFPS_NetworkCharacter::EndAim);
+
+		// Crouch/Slide
+		EnhancedInputComponent->BindAction(CrouchSLideAction,ETriggerEvent::Started,this,&AFPS_NetworkCharacter::StartCrouchSlide);
+		EnhancedInputComponent->BindAction(CrouchSLideAction,ETriggerEvent::Canceled,this,&AFPS_NetworkCharacter::EndcrouchSlide);
+
+		//Sprint
+		EnhancedInputComponent->BindAction(SprintAction,ETriggerEvent::Started,this,&AFPS_NetworkCharacter::StartSprint);
+		EnhancedInputComponent->BindAction(SprintAction,ETriggerEvent::Canceled,this,&AFPS_NetworkCharacter::EndSprint);
 	}
 
 }
