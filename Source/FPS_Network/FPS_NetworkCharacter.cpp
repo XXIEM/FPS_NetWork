@@ -36,19 +36,11 @@ AFPS_NetworkCharacter::AFPS_NetworkCharacter()
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
-	// Create a camera boom (pulls in towards the player if there is a collision)
-	//CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	//CameraBoom->SetupAttachment(RootComponent);
-	//CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
-	//CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+	//初始化AS与ASC
+	BAS=CreateDefaultSubobject<UBasicAttribute>(TEXT("BasicAS"));
+	AbilityComp=CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilityComp"));
 
-	// Create a follow camera
-	//FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	//FollowCamera->SetupAttachment(Mesh,TEXT("head")); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
-	//FollowCamera->bUsePawnControlRotation = true; // Camera does not rotate relative to arm
 
-	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
-	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
 
@@ -66,8 +58,26 @@ void AFPS_NetworkCharacter::BeginPlay()
 		}
 	}
 
-	
+	//初始化能力数组
+	if(nullptr!=AbilityComp)
+	{
+		if(HasAuthority()&& StartupAbilitys.Num()>0)
+		{
+			for(auto i=0; i<StartupAbilitys.Num();i++)
+			{
+				if(StartupAbilitys[i]==nullptr)
+				{
+					continue;
+				}
+				AbilityComp->GiveAbility(FGameplayAbilitySpec(StartupAbilitys[i].GetDefaultObject(),1,0));
+			}
+		}
+		AbilityComp->InitAbilityActorInfo(this,this);
+	}
+
+
 }
+
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -99,8 +109,17 @@ void AFPS_NetworkCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 		//Sprint
 		EnhancedInputComponent->BindAction(SprintAction,ETriggerEvent::Started,this,&AFPS_NetworkCharacter::StartSprint);
 		EnhancedInputComponent->BindAction(SprintAction,ETriggerEvent::Canceled,this,&AFPS_NetworkCharacter::EndSprint);
+
+		//Fire
+		EnhancedInputComponent->BindAction(FireAction,ETriggerEvent::Started,this,&AFPS_NetworkCharacter::StartFire);
+		EnhancedInputComponent->BindAction(FireAction,ETriggerEvent::Canceled,this,&AFPS_NetworkCharacter::EndFire);
 	}
 
+}
+
+UAbilitySystemComponent* AFPS_NetworkCharacter::GetAbilitySystemComponent() const
+{
+	return AbilityComp;
 }
 
 void AFPS_NetworkCharacter::Move(const FInputActionValue& Value)

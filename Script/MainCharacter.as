@@ -4,6 +4,8 @@ class AMainCharacter:AFPS_NetworkCharacter
     UCameraComponent Camera;
     default Camera.bUsePawnControlRotation = true;
 
+
+
     UPROPERTY(Replicated)
     bool bIsAim = false;//是否瞄准
 
@@ -15,6 +17,9 @@ class AMainCharacter:AFPS_NetworkCharacter
 
     UPROPERTY(Replicated)
     bool bIsSlide = false;//是否滑铲
+
+    UPROPERTY(Replicated)
+    bool bIsFire = false;//是否射击
 
     UPROPERTY()
     UClass Weapon_AR4;
@@ -29,6 +34,18 @@ class AMainCharacter:AFPS_NetworkCharacter
     float SprintSpeed = 600.0f;
     float SlideSpeed = 450.0f;
 
+    
+    //瞄准时间轴插值
+    UTimelineComponent AimTimeline;
+    FOnTimelineFloat OnAimTimelineTickCallback;
+    FOnTimelineEvent OnAimTimelineFinishedCallback; 
+    UPROPERTY(Category = TimelineCurve)
+    UCurveFloat AimCurve;//时间轴曲线
+
+
+
+
+
     UFUNCTION(BlueprintOverride)
     void BeginPlay()
     {
@@ -39,8 +56,19 @@ class AMainCharacter:AFPS_NetworkCharacter
         {
         Cast<AWeapon_AR4>(SpawnGun).MainCharacter=this;
         }
+
         
+        //绑定Aim时间轴的timeline回调
+        OnAimTimelineTickCallback.BindUFunction(this,n"AimTimelineTickCallBack");
+        AimTimeline.AddInterpFloat(AimCurve,OnAimTimelineTickCallback);
+
+        OnAimTimelineFinishedCallback.BindUFunction(this,n"AimTimelineFinishedCallback");
+        AimTimeline.SetTimelineFinishedFunc(OnAimTimelineFinishedCallback);
     }
+
+
+
+
     //初始绘制枪的蓝图
     UFUNCTION(BlueprintEvent)
     void SetWeaponBP()
@@ -52,19 +80,43 @@ class AMainCharacter:AFPS_NetworkCharacter
         
     }
 
+    
+
     //——————————————————————————————————————重载输入映射————————————————————————————————————————————————————————
 
     //瞄准输入
+
+
+
     UFUNCTION(BlueprintOverride)
     void StartAim()
     {
-        AimOnServer();
+        StartAimOnServer();
+  
+        //AimTimeline.Play();
+     
+        
     }
     UFUNCTION(BlueprintOverride)
     void EndAim()
     {
-        AimOnServer();
+        EndAimOnServer();
     }
+    UFUNCTION()
+    void AimTimelineTickCallBack(float32 value)
+    {
+        float AlphaVal = AimCurve.GetFloatValue(value);
+        float LerpRet = Math::Lerp(0.f,-30.f,AlphaVal);
+        float Fov = 100.f + LerpRet;
+        Camera.SetFieldOfView(Fov);
+        
+    }
+    UFUNCTION()
+    void AimTimelineFinishedCallback()
+    {
+
+    }
+
 
     
     //蹲伏or滑铲输入
@@ -112,6 +164,19 @@ class AMainCharacter:AFPS_NetworkCharacter
         EndSprintOnServer();
     }
 
+
+    //发射输入
+    UFUNCTION(BlueprintOverride)
+    void StartFire()
+    {
+        StartFireOnServer();
+
+    }
+    UFUNCTION(BlueprintOverride)
+    void EndFire()
+    {
+        EndFireOnServer();
+    }
     
 
     //————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -119,16 +184,14 @@ class AMainCharacter:AFPS_NetworkCharacter
     //———————————————————————————————————————网络同步输入映射——————————————————————————————————————————————————
     //服务端瞄准输入
     UFUNCTION(Server)
-    void AimOnServer()
+    void StartAimOnServer()
     {
-        if(!bIsAim)
-        {
             bIsAim = true;
-        }
-        else
-        {
+    }
+    UFUNCTION(Server)
+    void EndAimOnServer()
+    {
             bIsAim = false;
-        }
     }
 
 
@@ -186,6 +249,20 @@ class AMainCharacter:AFPS_NetworkCharacter
         }
         
     }    
+
+    //服务端发射输入
+    UFUNCTION()
+    void StartFireOnServer()
+    {
+        bIsFire = true;
+        Cast<AWeapon_AR4>(SpawnGun).Fire();
+    }
+    UFUNCTION()
+    void EndFireOnServer()
+    {
+        bIsFire = false;
+        Cast<AWeapon_AR4>(SpawnGun).StopFire();
+    }
 
 
     
