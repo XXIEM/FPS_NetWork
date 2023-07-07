@@ -40,6 +40,9 @@ AFPS_NetworkCharacter::AFPS_NetworkCharacter()
 	BAS=CreateDefaultSubobject<UBasicAttribute>(TEXT("BasicAS"));
 	AbilityComp=CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilityComp"));
 
+	//初始化物品栏
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComp"));
+	
 
 }
 

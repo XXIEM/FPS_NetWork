@@ -35,22 +35,13 @@ class AMainCharacter:AFPS_NetworkCharacter
     float SlideSpeed = 450.0f;
 
     
-    //瞄准时间轴插值
-    UTimelineComponent AimTimeline;
-    FOnTimelineFloat OnAimTimelineTickCallback;
-    FOnTimelineEvent OnAimTimelineFinishedCallback; 
-    UPROPERTY(Category = TimelineCurve)
-    UCurveFloat AimCurve;//时间轴曲线
-
-
-
 
 
     UFUNCTION(BlueprintOverride)
     void BeginPlay()
     {
         
-        SetWeaponBP();
+        //SetWeaponBP();
 
         if(SpawnGun!=nullptr)
         {
@@ -58,22 +49,16 @@ class AMainCharacter:AFPS_NetworkCharacter
         }
 
         
-        //绑定Aim时间轴的timeline回调
-        OnAimTimelineTickCallback.BindUFunction(this,n"AimTimelineTickCallBack");
-        AimTimeline.AddInterpFloat(AimCurve,OnAimTimelineTickCallback);
-
-        OnAimTimelineFinishedCallback.BindUFunction(this,n"AimTimelineFinishedCallback");
-        AimTimeline.SetTimelineFinishedFunc(OnAimTimelineFinishedCallback);
     }
 
 
 
 
     //初始绘制枪的蓝图
-    UFUNCTION(BlueprintEvent)
-    void SetWeaponBP()
+    UFUNCTION()
+    void SetWeaponBP(UClass InWeapon)
     {
-        SpawnGun = SpawnActor(Weapon_AR4,FVector(0,0,0),FRotator(0,0,0));
+        SpawnGun = SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0));
         SpawnGun.ActorScale3D=FVector(1,1,1);
         SpawnGun.AttachToComponent(Mesh,n"Weapon_Attach",EAttachmentRule::KeepRelative,EAttachmentRule::KeepRelative,EAttachmentRule::KeepRelative,true);
         
@@ -101,20 +86,6 @@ class AMainCharacter:AFPS_NetworkCharacter
     void EndAim()
     {
         EndAimOnServer();
-    }
-    UFUNCTION()
-    void AimTimelineTickCallBack(float32 value)
-    {
-        float AlphaVal = AimCurve.GetFloatValue(value);
-        float LerpRet = Math::Lerp(0.f,-30.f,AlphaVal);
-        float Fov = 100.f + LerpRet;
-        Camera.SetFieldOfView(Fov);
-        
-    }
-    UFUNCTION()
-    void AimTimelineFinishedCallback()
-    {
-
     }
 
 
@@ -251,13 +222,13 @@ class AMainCharacter:AFPS_NetworkCharacter
     }    
 
     //服务端发射输入
-    UFUNCTION()
+    UFUNCTION(Server)
     void StartFireOnServer()
     {
         bIsFire = true;
-        Cast<AWeapon_AR4>(SpawnGun).Fire();
+        Cast<AWeapon_AR4>(SpawnGun).Fire(this);
     }
-    UFUNCTION()
+    UFUNCTION(Server)
     void EndFireOnServer()
     {
         bIsFire = false;

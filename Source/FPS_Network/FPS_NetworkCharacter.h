@@ -8,10 +8,11 @@
 #include "Abilities/GameplayAbility.h"
 #include "AbilitySystemComponent.h"
 #include "BasicAttribute.h"
+#include "Component\InventoryComponent.h"
 #include "Components/TimelineComponent.h"
 #include "FPS_NetworkCharacter.generated.h"
 
-
+class UInventoryComponent;
 UCLASS(config=Game)
 class AFPS_NetworkCharacter : public ACharacter
 {
@@ -133,12 +134,19 @@ protected:
 	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
 
-
+protected:
+	//引入组件
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category=Component,meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInventoryComponent> InventoryComponent;
 
 public:
+	//获得组件的方法
 	/** Returns CameraBoom subobject **/
 	//FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	//FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	FORCEINLINE class UInventoryComponent* GetInventoryComponent(){ return InventoryComponent; }
+	
 };
 
