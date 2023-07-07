@@ -26,7 +26,7 @@ class AMainCharacter:AFPS_NetworkCharacter
 
     //绘制后的枪
     UPROPERTY()
-    AActor SpawnGun;
+    AActor SpawnGun = nullptr;
 
     //自身变量
     float WalkSpeed = 300.0f;
@@ -45,7 +45,7 @@ class AMainCharacter:AFPS_NetworkCharacter
 
         if(SpawnGun!=nullptr)
         {
-        Cast<AWeapon_AR4>(SpawnGun).MainCharacter=this;
+        Cast<AWeaponBase>(SpawnGun).MainCharacter=this;
         }
 
         
@@ -54,13 +54,26 @@ class AMainCharacter:AFPS_NetworkCharacter
 
 
 
-    //初始绘制枪的蓝图
+    //绘制枪的蓝图
     UFUNCTION()
     void SetWeaponBP(UClass InWeapon)
     {
-        SpawnGun = SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0));
-        SpawnGun.ActorScale3D=FVector(1,1,1);
-        SpawnGun.AttachToComponent(Mesh,n"Weapon_Attach",EAttachmentRule::KeepRelative,EAttachmentRule::KeepRelative,EAttachmentRule::KeepRelative,true);
+
+   
+        if(SpawnGun==nullptr)
+        {
+            SpawnGun = SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0));
+            SpawnGun.ActorScale3D=FVector(1,1,1);
+            SpawnGun.AttachToComponent(Mesh,n"Weapon_Attach",EAttachmentRule::KeepRelative,EAttachmentRule::KeepRelative,EAttachmentRule::KeepRelative,true);
+        }
+        else
+        {
+            SpawnGun.DestroyActor();
+            SpawnGun = nullptr;
+            SpawnGun = SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0));
+            SpawnGun.ActorScale3D=FVector(1,1,1);
+            SpawnGun.AttachToComponent(Mesh,n"Weapon_Attach",EAttachmentRule::KeepRelative,EAttachmentRule::KeepRelative,EAttachmentRule::KeepRelative,true);
+        }
         
         
     }
@@ -148,6 +161,68 @@ class AMainCharacter:AFPS_NetworkCharacter
     {
         EndFireOnServer();
     }
+
+    //物品栏输入
+    UFUNCTION(BlueprintOverride)
+    void UseInventoryOne()//键位1
+    {
+        CurrentInventoryIndex = 0;
+        UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
+        if(InWeapon!=nullptr)
+        {
+            SetWeaponBP(InWeapon);
+        }
+       
+    }
+    UFUNCTION(BlueprintOverride)
+    void UseInventoryTwo()//键位2
+    {
+        CurrentInventoryIndex = 1;
+        UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
+        if(InWeapon!=nullptr)
+        {
+            SetWeaponBP(InWeapon);
+        }
+    }
+    UFUNCTION(BlueprintOverride)
+    void UseInventoryThree()//键位3
+    {
+        CurrentInventoryIndex = 2;
+        UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
+        if(InWeapon!=nullptr)
+        {
+            SetWeaponBP(InWeapon);
+        }
+    }
+    UFUNCTION(BlueprintOverride)
+    void DropTheWeapon()
+    {
+        if(SpawnGun!=nullptr)
+        {
+            UClass DropWeaponBP = this.InventoryComponent.Get_WeaponPickUp(CurrentInventoryIndex);
+            AActor DropWeapon = SpawnActor(DropWeaponBP,GetActorLocation()+GetActorForwardVector()*130,FRotator(0,0,0));
+            
+
+            this.InventoryComponent.RemoveInventoryItem(CurrentInventoryIndex);
+            SpawnGun.DestroyActor();
+            SpawnGun = nullptr;
+            
+            
+            
+            CurrentInventoryIndex = this.InventoryComponent.FindNextExistWeapon();
+            if(CurrentInventoryIndex != -1)
+            {
+                UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
+                if(InWeapon!=nullptr)
+                {
+                    SetWeaponBP(InWeapon);
+                }
+            }
+        }
+        
+       
+
+    }
     
 
     //————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -226,13 +301,19 @@ class AMainCharacter:AFPS_NetworkCharacter
     void StartFireOnServer()
     {
         bIsFire = true;
-        Cast<AWeapon_AR4>(SpawnGun).Fire(this);
+        if(SpawnGun!=nullptr)
+        {
+            Cast<AWeaponBase>(SpawnGun).Fire(this);
+        }
     }
     UFUNCTION(Server)
     void EndFireOnServer()
     {
         bIsFire = false;
-        Cast<AWeapon_AR4>(SpawnGun).StopFire();
+        if(SpawnGun!=nullptr)
+        {
+            Cast<AWeaponBase>(SpawnGun).StopFire();
+        }
     }
 
 

@@ -3,6 +3,8 @@
 
 #include "InventoryComponent.h"
 
+#include "Kismet/KismetSystemLibrary.h"
+
 bool FInventoryItem::IsValid()
 {
 	if(FPSItem && ItemCount>0)
@@ -75,6 +77,8 @@ bool UInventoryComponent::AddInventoryItem(FInventoryItem NewItem)
 			if(InventoryItems[i].FPSItem == NewItem.FPSItem)
 			{
 				InventoryItems[i].ItemCount+=NewItem.ItemCount;
+				
+				FPS_NetworkCharacter->CurrentInventoryIndex=i;
 				//通知UI
 				InventoryItemChanged(InventoryItems);
 				return true;
@@ -86,6 +90,7 @@ bool UInventoryComponent::AddInventoryItem(FInventoryItem NewItem)
 			if(!InventoryItems[i].FPSItem)
 			{
 				InventoryItems[i]=NewItem;
+				FPS_NetworkCharacter->CurrentInventoryIndex = i;
 				//通知UI
 				InventoryItemChanged(InventoryItems);
 				return true;
@@ -124,6 +129,42 @@ void UInventoryComponent::SwapInventoryItem(int32 Index_i, int32 Index_j)
 	InventoryItems.Swap(Index_i,Index_j);
 	InventoryItemChanged(InventoryItems);
 }
+
+UClass* UInventoryComponent::Get_WeaponBP(int Index_i)
+{
+	if(InventoryItems[Index_i].FPSItem!=nullptr)
+	{
+		return InventoryItems[Index_i].FPSItem->WeaponBP;
+	}
+	return nullptr;
+
+}
+
+UClass* UInventoryComponent::Get_WeaponPickUp(int Index_i)
+{
+	if(InventoryItems[Index_i].FPSItem!=nullptr)
+	{
+		return InventoryItems[Index_i].FPSItem->WeaponPickUp;
+	}
+	return nullptr;
+
+}
+
+int UInventoryComponent::FindNextExistWeapon()
+{
+	for(SIZE_T i=0;i<4;i++)
+	{
+		if(InventoryItems[i].FPSItem!=nullptr)
+		{
+			return i;
+			break;
+		}
+	}
+	return -1;
+}
+
+
+
 
 void UInventoryComponent::InventoryItemChanged_Implementation(const TArray<FInventoryItem>& InInventoryItems)
 {

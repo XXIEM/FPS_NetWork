@@ -4,11 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "FPS_Network/Weapon/FPS_WeaponBase.h"
 #include "FPSItem.generated.h"
 
 /**
  * 
  */
+
 UCLASS(Abstract,BlueprintType)
 class FPS_NETWORK_API UFPSItem : public UPrimaryDataAsset
 {
@@ -33,6 +35,13 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=Max,meta = (AllowPrivateAccess = "true"))
 	int32 MaxCount;
+
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=Max,meta = (AllowPrivateAccess = "true"))
+	UClass* WeaponBP;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=Max,meta = (AllowPrivateAccess = "true"))
+	UClass* WeaponPickUp;
+	
 
 
 	UFUNCTION(BlueprintCallable,BlueprintPure,Category=Max)

@@ -13,3 +13,5 @@ enum class ESlotType : uint8
 	SlotType_InventorySlot,
 };
 
+
+

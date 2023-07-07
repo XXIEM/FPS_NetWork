@@ -58,6 +58,16 @@ class AFPS_NetworkCharacter : public ACharacter
 	//** Fire Input Action */
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = Input,meta = (AllowPrivateAccess = "true"))
 	class UInputAction* FireAction;
+
+	//** Inventory Input Action */
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = Input,meta = (AllowPrivateAccess = "true"))
+    class UInputAction* Inventory_Num1Action;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = Input,meta = (AllowPrivateAccess = "true"))
+	class UInputAction* Inventory_Num2Action;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = Input,meta = (AllowPrivateAccess = "true"))
+	class UInputAction* Inventory_Num3Action;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = Input,meta = (AllowPrivateAccess = "true"))
+	class UInputAction* Inventory_KeyGAction;
 	
 public:
 	AFPS_NetworkCharacter();
@@ -76,6 +86,10 @@ public:
 	//返回能力组件
 	UFUNCTION(BlueprintCallable,Category="AbilityComp")
 	UAbilitySystemComponent* GetAbilitySystemComponent() const;
+
+	//物品栏当前序列
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Inventory,meta = (AllowPrivateAccess = "true"))
+	int CurrentInventoryIndex=-1;
 	
 
 protected:
@@ -113,6 +127,20 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void EndFire();
+
+	/** Called for Inventory input */
+	UFUNCTION(BlueprintImplementableEvent)
+	void UseInventoryOne();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void UseInventoryTwo();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void UseInventoryThree();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void DropTheWeapon();
+	
 
 protected:
 	// APawn interface

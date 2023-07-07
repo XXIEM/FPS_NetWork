@@ -1,4 +1,4 @@
-class AWeaponBase:AActor
+class AWeaponBase:AFPS_WeaponBase
 {
     
     UPROPERTY(DefaultComponent)

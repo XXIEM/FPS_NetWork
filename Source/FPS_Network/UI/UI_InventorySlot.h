@@ -34,6 +34,9 @@ public:
 
 	UPROPERTY(meta=(BindWidget))
 	UImage* SlotIcon;
+
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* Name;
 	
 	
 };

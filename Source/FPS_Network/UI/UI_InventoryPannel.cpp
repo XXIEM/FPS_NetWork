@@ -56,6 +56,9 @@ void UUI_InventoryPannel::OnInventoryChanged(TArray<FInventoryItem> InInventoryI
 					{
 						InSlot->Num->SetText(FText::FromString(FString::FromInt(InInventoryItems[i * 4 + j].ItemCount)));
 						InSlot->Num->SetVisibility(ESlateVisibility::Visible);
+						
+						InSlot->Name->SetText(InInventoryItems[i * 4 + j].FPSItem->ItemName);
+						InSlot->Name->SetVisibility(ESlateVisibility::Visible);
 
 						InSlot->SlotIcon->SetBrushFromTexture(InInventoryItems[i * 4 + j].FPSItem->ItemIcon);
 						InSlot->SlotIcon->SetVisibility(ESlateVisibility::Visible);
@@ -65,6 +68,7 @@ void UUI_InventoryPannel::OnInventoryChanged(TArray<FInventoryItem> InInventoryI
 					{
 						InSlot->Num->SetVisibility(ESlateVisibility::Hidden);
 						InSlot->SlotIcon->SetVisibility(ESlateVisibility::Hidden);
+						InSlot->Name->SetVisibility(ESlateVisibility::Hidden);
 					}
 				}
 			}

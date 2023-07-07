@@ -25,6 +25,8 @@ struct FInventoryItem
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=InventoryItem)
 	int32 ItemCount;
 
+	
+
 	bool IsValid();
 
 	void ResetSelf();
@@ -85,4 +87,18 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category=Inventory)
 	TArray<FInventoryItem> InventoryItems;//物品栏中的实例数组
+
+	
+public:
+
+	//获取武器蓝图的方法
+	UFUNCTION(BlueprintCallable,Category=Inventory)
+	UClass* Get_WeaponBP(int Index_i);
+
+	UFUNCTION(BlueprintCallable,Category=Inventory)
+	UClass* Get_WeaponPickUp(int Index_i);
+	
+	//寻找物品栏中下一个存在的实例的方法
+	UFUNCTION(BlueprintCallable,Category=Inventory)
+	int FindNextExistWeapon();
 };
