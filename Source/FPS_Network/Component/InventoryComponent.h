@@ -101,4 +101,5 @@ public:
 	//寻找物品栏中下一个存在的实例的方法
 	UFUNCTION(BlueprintCallable,Category=Inventory)
 	int FindNextExistWeapon();
+	
 };
