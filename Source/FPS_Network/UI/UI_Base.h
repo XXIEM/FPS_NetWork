@@ -19,5 +19,6 @@ public:
 	UUI_Base(const FObjectInitializer& ObjectInitializer);
 
 protected:
+	//通过PlayerControler的方法拿到当前角色类的实例
 	AFPS_NetworkCharacter* UI_GetFPSCharacterBase();
 };

@@ -43,7 +43,7 @@ class FPS_NETWORK_API UInventoryComponent : public UActorComponent
 	GENERATED_BODY()
 
 	UPROPERTY()
-	TWeakObjectPtr<AFPS_NetworkCharacter> FPS_NetworkCharacter;
+	TWeakObjectPtr<AFPS_NetworkCharacter> FPS_NetworkCharacter;//所挂载角色类的回调对象
 
 public:	
 	// Sets default values for this component's properties
@@ -95,6 +95,7 @@ public:
 	UFUNCTION(BlueprintCallable,Category=Inventory)
 	UClass* Get_WeaponBP(int Index_i);
 
+	//获取武器拾取类蓝图的方法
 	UFUNCTION(BlueprintCallable,Category=Inventory)
 	UClass* Get_WeaponPickUp(int Index_i);
 	

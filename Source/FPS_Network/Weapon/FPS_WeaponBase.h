@@ -72,9 +72,11 @@ protected:
 	
 public:
 
+	//本来想用运算符重载，但是数组的运算符重载没办法实现不同对象类型的赋值，故依旧使用成员函数实现。
 	UFUNCTION(BlueprintCallable,Category=DT, meta = (AllowPrivateAccess = "true"))
 	TArray<FWeaponStruct> DTtoArray(UDataTable* InDataTable);
 
+	//根据枪械索引获取表中枪械数据的方法
 	UFUNCTION(BlueprintCallable,Category=DT, meta = (AllowPrivateAccess = "true"))
 	FWeaponStruct GetWeaponStructFromIndex(int Index_i);
 	

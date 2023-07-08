@@ -8,6 +8,6 @@ public class FPS_Network : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "NetCore","GameplayAbilities","GameplayTags","GameplayTagsEditor","GameplayTasks","HeadMountedDisplay", "EnhancedInput" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "NetCore","GameplayAbilities","GameplayTags","GameplayTasks","HeadMountedDisplay", "EnhancedInput" });
 	}
 }

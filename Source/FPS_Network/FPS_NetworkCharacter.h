@@ -8,6 +8,7 @@
 #include "Abilities/GameplayAbility.h"
 #include "AbilitySystemComponent.h"
 #include "BasicAttribute.h"
+#include "FPS_FuncLib.h"
 #include "Component\InventoryComponent.h"
 #include "Components/TimelineComponent.h"
 #include "FPS_NetworkCharacter.generated.h"
@@ -169,11 +170,6 @@ protected:
 
 public:
 	//获得组件的方法
-	/** Returns CameraBoom subobject **/
-	//FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	/** Returns FollowCamera subobject **/
-	//FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-
 	FORCEINLINE class UInventoryComponent* GetInventoryComponent(){ return InventoryComponent; }
 	
 };
