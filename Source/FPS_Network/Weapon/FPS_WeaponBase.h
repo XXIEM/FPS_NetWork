@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "GameFramework/Actor.h"
+#include "Kismet/DataTableFunctionLibrary.h"
 #include "FPS_WeaponBase.generated.h"
 
 
@@ -54,10 +55,27 @@ public:
 protected:
 
 	//枪械的Data Table
-	//UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=DT,meta = (AllowPrivateAccess = "true") )
-	//UDataTable* DataTableUtils;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=DT,meta = (AllowPrivateAccess = "true") )
+	UDataTable* WeaponDataTable;
 
+	//枪械的UStruct数组
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=DT,meta = (AllowPrivateAccess = "true"))
+	TArray<FWeaponStruct> WeaponStructArray;
+
+	//枪械索引
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=DT,meta = (AllowPrivateAccess = "true"))
+	int WeaponIndex;
+
+	//子类的UStruct
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=DT,meta = (AllowPrivateAccess = "true"))
+	FWeaponStruct WeaponChildStruct;
 	
+public:
 
+	UFUNCTION(BlueprintCallable,Category=DT, meta = (AllowPrivateAccess = "true"))
+	TArray<FWeaponStruct> DTtoArray(UDataTable* InDataTable);
 
+	UFUNCTION(BlueprintCallable,Category=DT, meta = (AllowPrivateAccess = "true"))
+	FWeaponStruct GetWeaponStructFromIndex(int Index_i);
+	
 };
