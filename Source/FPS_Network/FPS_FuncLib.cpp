@@ -11,11 +11,6 @@ AFPS_FuncLib::AFPS_FuncLib()
 
 }
 
-void AFPS_FuncLib::FillJsonToDT(UDataTable*DataTableUtils,const FString& JSONFilepath,UScriptStruct* ImportRowStruct)
-{
-	UDataTableFunctionLibrary* DTFLInstance;
-	DTFLInstance->FillDataTableFromJSONFile(DataTableUtils,JSONFilepath,ImportRowStruct);
-}
 
 void AFPS_FuncLib::SetMaxWalkspeed(ACharacter* Character, float Speed)
 {

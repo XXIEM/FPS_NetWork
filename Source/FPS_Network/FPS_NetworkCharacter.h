@@ -8,10 +8,12 @@
 #include "Abilities/GameplayAbility.h"
 #include "AbilitySystemComponent.h"
 #include "BasicAttribute.h"
+#include "FPS_FuncLib.h"
+#include "Component\InventoryComponent.h"
 #include "Components/TimelineComponent.h"
 #include "FPS_NetworkCharacter.generated.h"
 
-
+class UInventoryComponent;
 UCLASS(config=Game)
 class AFPS_NetworkCharacter : public ACharacter
 {
@@ -57,6 +59,16 @@ class AFPS_NetworkCharacter : public ACharacter
 	//** Fire Input Action */
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = Input,meta = (AllowPrivateAccess = "true"))
 	class UInputAction* FireAction;
+
+	//** Inventory Input Action */
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = Input,meta = (AllowPrivateAccess = "true"))
+    class UInputAction* Inventory_Num1Action;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = Input,meta = (AllowPrivateAccess = "true"))
+	class UInputAction* Inventory_Num2Action;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = Input,meta = (AllowPrivateAccess = "true"))
+	class UInputAction* Inventory_Num3Action;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = Input,meta = (AllowPrivateAccess = "true"))
+	class UInputAction* Inventory_KeyGAction;
 	
 public:
 	AFPS_NetworkCharacter();
@@ -75,6 +87,10 @@ public:
 	//返回能力组件
 	UFUNCTION(BlueprintCallable,Category="AbilityComp")
 	UAbilitySystemComponent* GetAbilitySystemComponent() const;
+
+	//物品栏当前序列
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Inventory,meta = (AllowPrivateAccess = "true"))
+	int CurrentInventoryIndex=-1;
 	
 
 protected:
@@ -113,6 +129,20 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void EndFire();
 
+	/** Called for Inventory input */
+	UFUNCTION(BlueprintImplementableEvent)
+	void UseInventoryOne();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void UseInventoryTwo();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void UseInventoryThree();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void DropTheWeapon();
+	
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -133,12 +163,14 @@ protected:
 	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
 
-
+protected:
+	//引入组件
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category=Component,meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInventoryComponent> InventoryComponent;
 
 public:
-	/** Returns CameraBoom subobject **/
-	//FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	/** Returns FollowCamera subobject **/
-	//FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	//获得组件的方法
+	FORCEINLINE class UInventoryComponent* GetInventoryComponent(){ return InventoryComponent; }
+	
 };
 

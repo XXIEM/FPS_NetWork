@@ -41,6 +41,9 @@ AFPS_NetworkCharacter::AFPS_NetworkCharacter()
 	BAS=CreateDefaultSubobject<UBasicAttribute>(TEXT("BasicAS"));
 	AbilityComp=CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilityComp"));
 
+	//初始化物品栏
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComp"));
+	
 
 }
 
@@ -114,6 +117,12 @@ void AFPS_NetworkCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 		//Fire
 		EnhancedInputComponent->BindAction(FireAction,ETriggerEvent::Started,this,&AFPS_NetworkCharacter::StartFire);
 		EnhancedInputComponent->BindAction(FireAction,ETriggerEvent::Canceled,this,&AFPS_NetworkCharacter::EndFire);
+
+		//Inventory
+		EnhancedInputComponent->BindAction(Inventory_Num1Action, ETriggerEvent::Triggered, this, &AFPS_NetworkCharacter::UseInventoryOne);
+		EnhancedInputComponent->BindAction(Inventory_Num2Action, ETriggerEvent::Triggered, this, &AFPS_NetworkCharacter::UseInventoryTwo);
+		EnhancedInputComponent->BindAction(Inventory_Num3Action, ETriggerEvent::Triggered, this, &AFPS_NetworkCharacter::UseInventoryThree);
+		EnhancedInputComponent->BindAction(Inventory_KeyGAction, ETriggerEvent::Triggered, this, &AFPS_NetworkCharacter::DropTheWeapon);
 	}
 
 }

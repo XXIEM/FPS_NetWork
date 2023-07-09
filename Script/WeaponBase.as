@@ -1,4 +1,4 @@
-class AWeaponBase:AActor
+class AWeaponBase:AFPS_WeaponBase
 {
     
     UPROPERTY(DefaultComponent)
@@ -13,8 +13,9 @@ class AWeaponBase:AActor
     AMainCharacter MainCharacter;
 
     UFUNCTION()
-    void Fire()
+    void Fire(AMainCharacter InCharacter)
     {
+        MainCharacter = InCharacter;
         SpawnBullet();
         ShootHandle=System::SetTimer(this,n"SpawnBullet",0.15,true);
         
