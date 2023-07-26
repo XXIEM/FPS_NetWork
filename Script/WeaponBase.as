@@ -1,8 +1,13 @@
 class AWeaponBase:AFPS_WeaponBase
 {
-    
     UPROPERTY(DefaultComponent)
+    USceneComponent Scene;
+
+    UPROPERTY(DefaultComponent,Attach = Scene)
     USkeletalMeshComponent SkeletalMesh;
+
+    UPROPERTY(DefaultComponent,Attach = SkeletalMesh)
+    USceneComponent AimPointTest;
     
     UPROPERTY()
     UClass Bullet;
@@ -12,6 +17,12 @@ class AWeaponBase:AFPS_WeaponBase
     UPROPERTY()
     AMainCharacter MainCharacter;
 
+
+
+    UFUNCTION(BlueprintEvent)
+    void AddRecoil(){}
+
+    //============================================================================
     UFUNCTION()
     void Fire(AMainCharacter InCharacter)
     {
@@ -49,12 +60,8 @@ class AWeaponBase:AFPS_WeaponBase
         {
             System::PrintString(FireTraceOutHit.GetActor().GetName().ToString());
         }
-        
-        
-        //System::LineTraceMulti(StartPoint,EndPoint,ETraceTypeQuery::TraceTypeQuery1,false,nullptr,EDrawDebugTrace::ForDuration,FireTraceOutHit);
-       //FRotator FinalRotator = AFPS_FuncLib::FindLookAtRotator(SLoc,MainCharacter.TargetPoint.GetWorldLocation());
-        //AActor SpawnBullet=SpawnActor(Bullet,SLoc,FinalRotator);
-        //SpawnBullet.ActorScale3D=FVector(0.5,0.5,0.5);
+        AddRecoil();
     }
+
 
 }

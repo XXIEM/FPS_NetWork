@@ -1,7 +1,7 @@
 class AMainCharacter:AFPS_NetworkCharacter
 {
     UPROPERTY(DefaultComponent,Attach=CharacterMesh0,AttachSocket=head)
-    UCameraComponent Camera;
+    UCineCameraComponent Camera;
     default Camera.bUsePawnControlRotation = true;
 
 
@@ -28,6 +28,10 @@ class AMainCharacter:AFPS_NetworkCharacter
     UPROPERTY()
     AActor SpawnGun = nullptr;
 
+    //绘制后的枪骨骼的trans
+    UPROPERTY()
+    FTransform WeaponBoneTrans;
+
     //自身变量
     float WalkSpeed = 300.0f;
     float CrouchSpeed = 150.0f;
@@ -47,10 +51,10 @@ class AMainCharacter:AFPS_NetworkCharacter
         {
         Cast<AWeaponBase>(SpawnGun).MainCharacter=this;
         }
+        WeaponMove();
 
         
     }
-
 
 
 
@@ -64,7 +68,9 @@ class AMainCharacter:AFPS_NetworkCharacter
         {
             SpawnGun = SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0));
             SpawnGun.ActorScale3D=FVector(1,1,1);
-            SpawnGun.AttachToComponent(Mesh,n"Weapon_Attach",EAttachmentRule::KeepRelative,EAttachmentRule::KeepRelative,EAttachmentRule::KeepRelative,true);
+            SpawnGun.AttachToComponent(Mesh,n"VB Weapon",EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,true);
+            //WeaponBoneTrans = Cast<AWeaponBase>(SpawnGun).SkeletalMesh.GetSocketTransform(n"AimPoint",ERelativeTransformSpace::RTS_Actor);
+            WeaponBoneTrans = Cast<AWeaponBase>(SpawnGun).AimPointTest.GetRelativeTransform();
         }
         else
         {
@@ -72,11 +78,14 @@ class AMainCharacter:AFPS_NetworkCharacter
             SpawnGun = nullptr;
             SpawnGun = SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0));
             SpawnGun.ActorScale3D=FVector(1,1,1);
-            SpawnGun.AttachToComponent(Mesh,n"Weapon_Attach",EAttachmentRule::KeepRelative,EAttachmentRule::KeepRelative,EAttachmentRule::KeepRelative,true);
+            SpawnGun.AttachToComponent(Mesh,n"VB Weapon",EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,true);
+            //WeaponBoneTrans = Cast<AWeaponBase>(SpawnGun).SkeletalMesh.GetSocketTransform(n"AimPoint",ERelativeTransformSpace::RTS_Actor);
+            WeaponBoneTrans = Cast<AWeaponBase>(SpawnGun).AimPointTest.GetRelativeTransform();
         }
-        
-        
     }
+
+    UFUNCTION(BlueprintEvent)
+    void WeaponMove(){}
 
     
 
