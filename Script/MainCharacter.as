@@ -28,6 +28,9 @@ class AMainCharacter:AFPS_NetworkCharacter
     UPROPERTY()
     AActor SpawnGun = nullptr;
 
+    UPROPERTY()
+    UClass LastWeapon;//绘制的上一个枪
+
     //绘制后的枪骨骼的trans
     UPROPERTY()
     FTransform WeaponBoneTrans;
@@ -63,24 +66,26 @@ class AMainCharacter:AFPS_NetworkCharacter
     void SetWeaponBP(UClass InWeapon)
     {
 
-   
-        if(SpawnGun==nullptr)
+        if(LastWeapon!=InWeapon)
         {
-            SpawnGun = SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0));
-            SpawnGun.ActorScale3D=FVector(1,1,1);
-            SpawnGun.AttachToComponent(Mesh,n"VB Weapon",EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,true);
-            //WeaponBoneTrans = Cast<AWeaponBase>(SpawnGun).SkeletalMesh.GetSocketTransform(n"AimPoint",ERelativeTransformSpace::RTS_Actor);
-            WeaponBoneTrans = Cast<AWeaponBase>(SpawnGun).AimPointTest.GetRelativeTransform();
-        }
-        else
-        {
-            SpawnGun.DestroyActor();
-            SpawnGun = nullptr;
-            SpawnGun = SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0));
-            SpawnGun.ActorScale3D=FVector(1,1,1);
-            SpawnGun.AttachToComponent(Mesh,n"VB Weapon",EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,true);
-            //WeaponBoneTrans = Cast<AWeaponBase>(SpawnGun).SkeletalMesh.GetSocketTransform(n"AimPoint",ERelativeTransformSpace::RTS_Actor);
-            WeaponBoneTrans = Cast<AWeaponBase>(SpawnGun).AimPointTest.GetRelativeTransform();
+            if(SpawnGun==nullptr)
+            {
+                SpawnGun = SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0));
+                SpawnGun.ActorScale3D=FVector(1,1,1);
+                SpawnGun.AttachToComponent(Mesh,n"VB Weapon",EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,true);
+                //WeaponBoneTrans = Cast<AWeaponBase>(SpawnGun).SkeletalMesh.GetSocketTransform(n"AimPoint",ERelativeTransformSpace::RTS_Actor);
+                WeaponBoneTrans = Cast<AWeaponBase>(SpawnGun).AimPointTest.GetRelativeTransform();
+            }
+            else
+            {
+                SpawnGun.DestroyActor();
+                SpawnGun = nullptr;
+                SpawnGun = SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0));
+                SpawnGun.ActorScale3D=FVector(1,1,1);
+                SpawnGun.AttachToComponent(Mesh,n"VB Weapon",EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,true);
+                //WeaponBoneTrans = Cast<AWeaponBase>(SpawnGun).SkeletalMesh.GetSocketTransform(n"AimPoint",ERelativeTransformSpace::RTS_Actor);
+                WeaponBoneTrans = Cast<AWeaponBase>(SpawnGun).AimPointTest.GetRelativeTransform();
+            }
         }
     }
 
@@ -163,7 +168,6 @@ class AMainCharacter:AFPS_NetworkCharacter
     void StartFire()
     {
         StartFireOnServer();
-
     }
     UFUNCTION(BlueprintOverride)
     void EndFire()
@@ -176,11 +180,14 @@ class AMainCharacter:AFPS_NetworkCharacter
     void UseInventoryOne()//键位1
     {
         CurrentInventoryIndex = 0;
+        
         UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
         if(InWeapon!=nullptr)
         {
             SetWeaponBP(InWeapon);
+            LastWeapon = InWeapon;
         }
+        
        
     }
     UFUNCTION(BlueprintOverride)
@@ -191,7 +198,9 @@ class AMainCharacter:AFPS_NetworkCharacter
         if(InWeapon!=nullptr)
         {
             SetWeaponBP(InWeapon);
+            LastWeapon = InWeapon;
         }
+        
     }
     UFUNCTION(BlueprintOverride)
     void UseInventoryThree()//键位3
@@ -201,6 +210,7 @@ class AMainCharacter:AFPS_NetworkCharacter
         if(InWeapon!=nullptr)
         {
             SetWeaponBP(InWeapon);
+            LastWeapon = InWeapon;
         }
     }
     UFUNCTION(BlueprintOverride)

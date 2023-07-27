@@ -17,16 +17,58 @@ class AWeaponBase:AFPS_WeaponBase
     UPROPERTY()
     AMainCharacter MainCharacter;
 
+    //---------后坐力部分------------------
+    UPROPERTY()
+    int CurrentShootTimes = -1;
+
+    UPROPERTY()
+    float MaxRecoilY=0;//Y轴总后坐力上升距离
+
+        UPROPERTY()
+    float MaxRecoilX=0;//X轴总后坐力平移距离
+
+
+    UPROPERTY()
+    float UpOneTime;//单次上升的后坐力距离
+
+    UPROPERTY()
+    float LROneTime;//单次平移的后坐力距离
+
+    UPROPERTY()
+    float DropAvoidOffsetY;//回落修正Y
+
+    UPROPERTY()
+    float DropAvoidOffsetX;//回落修正X
 
 
     UFUNCTION(BlueprintEvent)
     void AddRecoil(){}
 
+    UFUNCTION(BlueprintEvent)
+    void RecoilDown(){}
+
+    UFUNCTION(BlueprintEvent)
+    void RecoilCameraShake(){}
+
+    UFUNCTION(BlueprintEvent)
+    void RecoilHalfway(){}
+    //------------------------------------
+
+
     //============================================================================
     UFUNCTION()
     void Fire(AMainCharacter InCharacter)
     {
-        MainCharacter = InCharacter;
+        if(MainCharacter==nullptr)
+        {
+            MainCharacter = InCharacter;
+        }
+        RecoilCameraShake();
+        RecoilHalfway();
+        MaxRecoilY = 0;
+        MaxRecoilX = 0;
+        DropAvoidOffsetY = 0;
+        DropAvoidOffsetX = 0;
         SpawnBullet();
         ShootHandle=System::SetTimer(this,n"SpawnBullet",0.15,true);
         
@@ -37,6 +79,9 @@ class AWeaponBase:AFPS_WeaponBase
     {
 
         System::ClearAndInvalidateTimerHandle(ShootHandle);
+        RecoilDown();
+        CurrentShootTimes = -1;
+        UpOneTime = 0;
     }
 
     UFUNCTION()
