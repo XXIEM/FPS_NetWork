@@ -29,7 +29,6 @@ struct  FWeaponStruct :public FTableRowBase
 	UPROPERTY(EditAnywhere)
     float RelordSpeed;
 	
-
 };
 
 

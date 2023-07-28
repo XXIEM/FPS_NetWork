@@ -7,6 +7,7 @@
 
 #include "Engine/DataTable.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "UObject/ConstructorHelpers.h"
 
 
 // Sets default values
