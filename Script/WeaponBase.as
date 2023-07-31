@@ -14,7 +14,7 @@ class AWeaponBase:AFPS_WeaponBase
 
     FTimerHandle ShootHandle;
 
-    UPROPERTY()
+    UPROPERTY(Replicated)
     AMainCharacter MainCharacter;
 
     //---------后坐力部分------------------

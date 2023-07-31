@@ -38,8 +38,8 @@ class AMainCharacter:AFPS_NetworkCharacter
     //自身变量
     float WalkSpeed = 300.0f;
     float CrouchSpeed = 150.0f;
-    float SprintSpeed = 600.0f;
-    float SlideSpeed = 450.0f;
+    float SprintSpeed = 500.0f;
+    float SlideSpeed = 400.0f;
 
     
 
@@ -316,7 +316,7 @@ class AMainCharacter:AFPS_NetworkCharacter
     }    
 
     //服务端发射输入
-    UFUNCTION(Server)
+    UFUNCTION(NetMulticast)
     void StartFireOnServer()
     {
         bIsFire = true;
@@ -325,7 +325,7 @@ class AMainCharacter:AFPS_NetworkCharacter
             Cast<AWeaponBase>(SpawnGun).Fire(this);
         }
     }
-    UFUNCTION(Server)
+    UFUNCTION(NetMulticast)
     void EndFireOnServer()
     {
         bIsFire = false;
