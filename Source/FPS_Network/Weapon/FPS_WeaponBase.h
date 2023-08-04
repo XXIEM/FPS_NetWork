@@ -14,20 +14,23 @@ struct  FWeaponStruct :public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	FString WeaponName;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	float BulletSpread;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	float BulletDamage;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	float FireFrequency;
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
     float RelordSpeed;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	int BulletNum;
 	
 
 };

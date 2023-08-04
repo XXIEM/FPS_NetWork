@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "FPS_Network/FPS_NetworkCharacter.h"
-#include "FPS_Network/Item/FPSItem.h"
+#include "FPS_Network/Item/WeaponItem.h"
 #include "InventoryComponent.generated.h"
 
 class AFPS_NetworkCharacter;
@@ -20,19 +20,14 @@ struct FInventoryItem
 	
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=InventoryItem)
-	UFPSItem* FPSItem;
+	UWeaponItem* FPSItem;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=InventoryItem)
 	int32 ItemCount;
-
 	
-
 	bool IsValid();
 
 	void ResetSelf();
-	
-	
-	
 	
 };
 

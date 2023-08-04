@@ -97,23 +97,24 @@ class AMainCharacter:AFPS_NetworkCharacter
     //——————————————————————————————————————重载输入映射————————————————————————————————————————————————————————
 
     //瞄准输入
-
-
-
     UFUNCTION(BlueprintOverride)
     void StartAim()
     {
         StartAimOnServer();
-  
-        //AimTimeline.Play();
-     
+        StartAimSwitchCurve();
         
     }
     UFUNCTION(BlueprintOverride)
     void EndAim()
     {
         EndAimOnServer();
+        EndAimSwitchCurve();
     }
+    UFUNCTION(BlueprintEvent)
+    void StartAimSwitchCurve(){}
+    UFUNCTION(BlueprintEvent)
+    void EndAimSwitchCurve(){}
+    
 
 
     

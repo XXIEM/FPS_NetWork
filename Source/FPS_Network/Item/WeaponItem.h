@@ -19,4 +19,10 @@ public:
 	{
 		ItemType = UFPSAssetManager::WeaponItemType;
 	}
+	
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=Max,meta = (AllowPrivateAccess = "true"))
+	UClass* WeaponBP;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=Max,meta = (AllowPrivateAccess = "true"))
+	UClass* WeaponPickUp;
 };

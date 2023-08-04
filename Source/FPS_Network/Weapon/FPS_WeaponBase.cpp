@@ -32,7 +32,7 @@ void AFPS_WeaponBase::BeginPlay()
 	//DataTableUtils->RowStruct =
 	WeaponStructArray = DTtoArray(WeaponDataTable);
 	WeaponChildStruct = GetWeaponStructFromIndex(WeaponIndex);
-	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%s %f %f %f"), *WeaponChildStruct.WeaponName,WeaponChildStruct.BulletDamage,WeaponChildStruct.FireFrequency,WeaponChildStruct.RelordSpeed));
+	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%s %f %f %f %d"), *WeaponChildStruct.WeaponName,WeaponChildStruct.BulletDamage,WeaponChildStruct.FireFrequency,WeaponChildStruct.RelordSpeed,WeaponChildStruct.BulletNum));
 
 	
 }

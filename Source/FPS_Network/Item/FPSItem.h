@@ -35,14 +35,7 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=Max,meta = (AllowPrivateAccess = "true"))
 	int32 MaxCount;
-
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=Max,meta = (AllowPrivateAccess = "true"))
-	UClass* WeaponBP;
 	
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=Max,meta = (AllowPrivateAccess = "true"))
-	UClass* WeaponPickUp;
-	
-
 
 	UFUNCTION(BlueprintCallable,BlueprintPure,Category=Max)
 	bool IsConsumable() const;
