@@ -29,6 +29,9 @@ class AMainCharacter:AFPS_NetworkCharacter
     AActor SpawnGun = nullptr;
 
     UPROPERTY()
+    TArray<AActor> ExistGun;
+
+    UPROPERTY()
     UClass LastWeapon;//绘制的上一个枪
 
     //绘制后的枪骨骼的trans
@@ -50,12 +53,12 @@ class AMainCharacter:AFPS_NetworkCharacter
         
         //SetWeaponBP();
 
-        if(SpawnGun!=nullptr)
-        {
-        Cast<AWeaponBase>(SpawnGun).MainCharacter=this;
-        }
+        // if(SpawnGun!=nullptr)
+        // {
+        // Cast<AWeaponBase>(SpawnGun).MainCharacter=this;
+        // }
         WeaponMove();
-
+        ExistGun.SetNum(3);
         
     }
 
@@ -91,6 +94,54 @@ class AMainCharacter:AFPS_NetworkCharacter
 
     UFUNCTION(BlueprintEvent)
     void WeaponMove(){}
+
+    UFUNCTION()
+    void InitWeaponBP(UClass InWeapon)
+    {
+        for(int i = 0;i<ExistGun.Num();i++)
+        {
+            if(ExistGun[i] == nullptr)
+            {
+                ExistGun[i] = SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0));
+                ExistGun[i].ActorScale3D=FVector(1,1,1);
+                ExistGun[i].AttachToComponent(Mesh,n"VB Weapon",EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,true);
+                WeaponBoneTrans = Cast<AWeaponBase>(ExistGun[i]).AimPointTest.GetRelativeTransform();
+                Cast<AWeaponBase>(ExistGun[i]).MainCharacter = this;
+                break;
+            }
+            else
+            {
+                //ExistGun[i].DetachFromActor(EDetachmentRule::KeepRelative,EDetachmentRule::KeepRelative,EDetachmentRule::KeepRelative);
+                //ExistGun[i].SetActorLocation(FVector(0,0,-200));
+                ExistGun[i].SetActorHiddenInGame(true);
+            }
+        }
+    }
+
+    UFUNCTION()
+    void SwitchWeaponBP(int Index)
+    {
+        for(int i = 0;i<ExistGun.Num();i++)
+        {
+            if(Index!=i)
+            {
+                if(ExistGun[i]!=nullptr)
+                {
+                    ExistGun[i].SetActorHiddenInGame(true);
+                }
+            }
+            else
+            {
+                if(ExistGun[i]!=nullptr)
+                {
+                    ExistGun[i].SetActorHiddenInGame(false);
+                    WeaponBoneTrans = Cast<AWeaponBase>(ExistGun[i]).AimPointTest.GetRelativeTransform();
+                }
+            }
+    
+        }
+
+    }
 
     
 
@@ -182,12 +233,13 @@ class AMainCharacter:AFPS_NetworkCharacter
     {
         CurrentInventoryIndex = 0;
         
-        UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
-        if(InWeapon!=nullptr)
-        {
-            SetWeaponBP(InWeapon);
-            LastWeapon = InWeapon;
-        }
+        // UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
+        // if(InWeapon!=nullptr)
+        // {
+        //     SetWeaponBP(InWeapon);
+        //     LastWeapon = InWeapon;
+        // }
+        SwitchWeaponBP(CurrentInventoryIndex);
         
        
     }
@@ -195,24 +247,26 @@ class AMainCharacter:AFPS_NetworkCharacter
     void UseInventoryTwo()//键位2
     {
         CurrentInventoryIndex = 1;
-        UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
-        if(InWeapon!=nullptr)
-        {
-            SetWeaponBP(InWeapon);
-            LastWeapon = InWeapon;
-        }
+        // UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
+        // if(InWeapon!=nullptr)
+        // {
+        //     SetWeaponBP(InWeapon);
+        //     LastWeapon = InWeapon;
+        // }
+        SwitchWeaponBP(CurrentInventoryIndex);
         
     }
     UFUNCTION(BlueprintOverride)
     void UseInventoryThree()//键位3
     {
         CurrentInventoryIndex = 2;
-        UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
-        if(InWeapon!=nullptr)
-        {
-            SetWeaponBP(InWeapon);
-            LastWeapon = InWeapon;
-        }
+        // UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
+        // if(InWeapon!=nullptr)
+        // {
+        //     SetWeaponBP(InWeapon);
+        //     LastWeapon = InWeapon;
+        // }
+        SwitchWeaponBP(CurrentInventoryIndex);
     }
     UFUNCTION(BlueprintOverride)
     void DropTheWeapon()
@@ -321,18 +375,24 @@ class AMainCharacter:AFPS_NetworkCharacter
     void StartFireOnServer()
     {
         bIsFire = true;
-        if(SpawnGun!=nullptr)
+        if(CurrentInventoryIndex != -1)
         {
-            Cast<AWeaponBase>(SpawnGun).Fire(this);
+            if(ExistGun[CurrentInventoryIndex]!=nullptr)
+            {
+                Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).Fire(this);
+            }
         }
     }
     UFUNCTION(NetMulticast)
     void EndFireOnServer()
     {
         bIsFire = false;
-        if(SpawnGun!=nullptr)
+        if(CurrentInventoryIndex != -1)
         {
-            Cast<AWeaponBase>(SpawnGun).StopFire();
+            if(ExistGun[CurrentInventoryIndex]!=nullptr)
+            {
+                Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).StopFire();
+            }
         }
     }
 

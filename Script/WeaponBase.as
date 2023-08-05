@@ -59,7 +59,7 @@ class AWeaponBase:AFPS_WeaponBase
 
     //--------------换弹部分--------------
     UPROPERTY()
-    int CurrentBulletNum = 30;
+    int CurrentBulletNum;
 
     UPROPERTY()
     int MaxCurrentBulletNum;
