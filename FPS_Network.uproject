@@ -30,6 +30,10 @@
 		{
 			"Name": "onetwo",
 			"Enabled": false
+		},
+		{
+			"Name": "DatasmithImporter",
+			"Enabled": true
 		}
 	]
 }
