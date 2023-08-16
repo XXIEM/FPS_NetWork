@@ -50,11 +50,15 @@ class AWeaponBase:AFPS_WeaponBase
     UFUNCTION(BlueprintEvent)
     void RecoilDown(){}
 
+
     UFUNCTION(BlueprintEvent)
     void RecoilCameraShake(){}
 
     UFUNCTION(BlueprintEvent)
     void RecoilHalfway(){}
+
+    UFUNCTION(BlueprintEvent)
+    void StopUp(){}
     //------------------------------------
 
     //--------------换弹部分--------------
@@ -69,14 +73,22 @@ class AWeaponBase:AFPS_WeaponBase
 
     //============================================================================
 
+    UFUNCTION(BlueprintOverride)
+    void InitWeaponNum()
+    {
+        CurrentBulletNum = WeaponChildStruct.BulletNum;
+        MaxCurrentBulletNum = CurrentBulletNum;
+        TotalBulletNum = CurrentBulletNum * 3;
+        
+    }
 
     UFUNCTION()
     void Fire(AMainCharacter InCharacter)
     {
-        if(MainCharacter==nullptr)
-        {
-            MainCharacter = InCharacter;
-        }
+        // if(MainCharacter==nullptr)
+        // {
+        //     MainCharacter = InCharacter;
+        // }
 
         RecoilCameraShake();
         RecoilHalfway();
@@ -103,25 +115,35 @@ class AWeaponBase:AFPS_WeaponBase
     UFUNCTION()
     void SpawnBullet()
     {
-            FVector SLoc=SkeletalMesh.GetSocketLocation(n"FireLoc");
-            FRotator RLoc=SkeletalMesh.GetSocketRotation(n"FireLoc");
-            FHitResult FireTraceOutHit;
-
-            TArray<AActor> IgnoreActors;
-            IgnoreActors.Add(Cast<AActor>(MainCharacter)); 	
-            TArray<EObjectTypeQuery> ObjectTypes;
-            ObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery3);
-            
-            
-            FVector StartPoint = MainCharacter.Camera.GetWorldLocation();
-            FVector EndPoint = StartPoint + MainCharacter.Camera.GetForwardVector()*3000.f;
-            //bool bIsHit = System::LineTraceSingle(SLoc,EndPoint,ETraceTypeQuery::TraceTypeQuery3,false,IgnoreActors,EDrawDebugTrace::ForDuration,FireTraceOutHit,true);
-            bool bIsHit = System::LineTraceSingleForObjects(SLoc,EndPoint,ObjectTypes,false,IgnoreActors,EDrawDebugTrace::ForDuration,FireTraceOutHit,true);
-            if(bIsHit)
+            if(CurrentBulletNum>0)
             {
-                System::PrintString(FireTraceOutHit.GetActor().GetName().ToString());
+                FVector SLoc=SkeletalMesh.GetSocketLocation(n"FireLoc");
+                FRotator RLoc=SkeletalMesh.GetSocketRotation(n"FireLoc");
+                FHitResult FireTraceOutHit;
+
+                TArray<AActor> IgnoreActors;
+                IgnoreActors.Add(Cast<AActor>(MainCharacter)); 	
+                TArray<EObjectTypeQuery> ObjectTypes;
+                ObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery3);
+                
+                
+                FVector StartPoint = MainCharacter.Camera.GetWorldLocation();
+                FVector EndPoint = StartPoint + MainCharacter.Camera.GetForwardVector()*3000.f;
+                //bool bIsHit = System::LineTraceSingle(SLoc,EndPoint,ETraceTypeQuery::TraceTypeQuery3,false,IgnoreActors,EDrawDebugTrace::ForDuration,FireTraceOutHit,true);
+                bool bIsHit = System::LineTraceSingleForObjects(SLoc,EndPoint,ObjectTypes,false,IgnoreActors,EDrawDebugTrace::ForDuration,FireTraceOutHit,true);
+                if(bIsHit)
+                {
+                    System::PrintString(FireTraceOutHit.GetActor().GetName().ToString());
+                }
+                CurrentBulletNum--;
+                AddRecoil();//添加后坐力
+                
             }
-            AddRecoil();
+            else
+            {
+                RecoilDown();
+                StopUp();
+            }
     }
 
     UFUNCTION()
@@ -129,7 +151,7 @@ class AWeaponBase:AFPS_WeaponBase
     {
         if(CurrentBulletNum<MaxCurrentBulletNum && TotalBulletNum+CurrentBulletNum>MaxCurrentBulletNum && TotalBulletNum>0)
         {
-            TotalBulletNum -= CurrentBulletNum;
+            TotalBulletNum -= MaxCurrentBulletNum-CurrentBulletNum;
             CurrentBulletNum = MaxCurrentBulletNum;
         }
         else if(CurrentBulletNum<MaxCurrentBulletNum && TotalBulletNum+CurrentBulletNum<MaxCurrentBulletNum && TotalBulletNum>0)
@@ -139,6 +161,8 @@ class AWeaponBase:AFPS_WeaponBase
         }
 
     }
+    UFUNCTION(BlueprintEvent)
+    void CallUIRelordUpdate(){}
 
 
 }
