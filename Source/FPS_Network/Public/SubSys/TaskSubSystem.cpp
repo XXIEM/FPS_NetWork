@@ -3,40 +3,30 @@
 
 #include "TaskSubSystem.h"
 
-bool UTaskSubSystem::TaskComplete(FString TaskName)
-{
-	for(int i = 0;i < TaskList_Array.Num();i++)
-	{
-		if(TaskName == TaskList_Array[i].TaskName)
-		{
-			CompletedTask = TaskList_Array[i];
-			break;
-		}
-	}
+#include "EcoSubSystem.h"
 
-	if(CompletedTask.score != 0)
-	{
-		return true;
-	}
-	else return false;
-}
-
-bool UTaskSubSystem::ModifyScore(FTaskNode TaskCompleted)
+bool UTaskSubSystem::TaskComplete(FText TaskName, FString PlayerName, int TaskScore)
 {
+	int DeltaEco;
 	
+	ScoreSysPtr->AddScore(PlayerName, TaskScore);
+
+	DeltaEco = TaskScore * EcoMagnification;
+	
+	EcoSysPtr->ModifyEco(PlayerName, DeltaEco);
 	return true;
 }
 
-bool UTaskSubSystem::ApplyScoreToEco(FTaskNode TaskCompleted)
+bool UTaskSubSystem::GetScoreSubSys(UScoreSubSystem* TargetPtr)
 {
-
+	ScoreSysPtr = TargetPtr;
+	if(ScoreSysPtr != nullptr) UE_LOG(LogTemp,Warning,TEXT("已连接上ScoreSubSys"));
 	return true;
 }
 
-//依据TaskName添加节点
-bool UTaskSubSystem::AddNode(FString TaskName)
+bool UTaskSubSystem::GetEcoSubSys(UEcoSubSystem* TargetPtr)
 {
-	FTaskNode NewNode;
-	NewNode.TaskName = TaskName;
-	TaskList_Array.Add(NewNode);
+	EcoSysPtr = TargetPtr;
+	if(EcoSysPtr != nullptr) UE_LOG(LogTemp,Warning,TEXT("已连接上EcoSubSys"));
+	return true;
 }

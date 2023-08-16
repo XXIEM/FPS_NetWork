@@ -3,9 +3,12 @@
 
 #include "FPSAssetManager.h"
 
+#include "Engine/Engine.h"
+
 
 const FPrimaryAssetType UFPSAssetManager::WeaponItemType = TEXT("Weapon");
 const FPrimaryAssetType UFPSAssetManager::MissileItemType = TEXT("Missile");
+const FPrimaryAssetType UFPSAssetManager::TaskItemType = TEXT("Task");
 
 
 void UFPSAssetManager::StartInitialLoading()

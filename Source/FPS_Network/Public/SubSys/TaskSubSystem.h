@@ -3,28 +3,31 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EcoSubSystem.h"
 #include "InstanceSubSys.h"
+#include "ScoreSubSystem.h"
 #include "TaskSubSystem.generated.h"
 /**
  * 
  */
-USTRUCT(BlueprintType)
-struct FTaskNode
-{
-	GENERATED_BODY()
-	FTaskNode()
-	{
-		TaskName = "";
-		score = 0;
-	}
-	
-	UPROPERTY(EditAnywhere)
-	FString TaskName;
-	
-	UPROPERTY(EditAnywhere)
-	int score;
-	
-};
+
+// USTRUCT(BlueprintType)
+// struct FTaskNode
+// {
+// 	GENERATED_BODY()
+// 	FTaskNode()
+// 	{
+// 		TaskName = "";
+// 		score = 0;
+// 	}
+// 	
+// 	UPROPERTY(EditAnywhere)
+// 	FString TaskName;
+// 	
+// 	UPROPERTY(EditAnywhere)
+// 	int score;
+// 	
+// };
 
 UCLASS(Blueprintable)
 
@@ -34,28 +37,34 @@ class FPS_NETWORK_API UTaskSubSystem : public UInstanceSubSys
 public:
 	//完成任务
 	UFUNCTION(BlueprintCallable, Category="Task")
-	bool TaskComplete(FString TaskName);
-	
-	//对分数子系统的通讯
-	UFUNCTION(BlueprintCallable, Category="Task")
-	bool ModifyScore(FTaskNode TaskCompleted);
-	
-	//对经济子系统的通讯
-	UFUNCTION(BlueprintCallable, Category="Task")
-	bool ApplyScoreToEco(FTaskNode TaskCompleted);
+	bool TaskComplete(FText TaskName, FString PlayerName, int TaskScore);
 
-	//添加节点
-	UFUNCTION(BlueprintCallable, Category="Task")
-	bool AddNode(FString TaskName);  
+	//绑定分数子系统
+	UFUNCTION(BlueprintCallable)
+	bool GetScoreSubSys(UScoreSubSystem* TargetPtr);
+
+	//绑定经济子系统
+	UFUNCTION(BlueprintCallable)
+	bool GetEcoSubSys(UEcoSubSystem* TargetPtr);
 
 public:
-	//任务清单
-	UPROPERTY(BlueprintReadWrite, Category="Task")
-	TArray<FTaskNode> TaskList_Array;
+
 	
 	//完成任务的暂存变量
 	UPROPERTY(BlueprintReadWrite, Category="Task")
-	FTaskNode CompletedTask;
+	FString CompletedTask;
+
+	//绑定的分数子系统
+	UPROPERTY(BlueprintReadWrite)
+	UScoreSubSystem* ScoreSysPtr;
+
+	//绑定的经济子系统
+	UPROPERTY(BlueprintReadWrite)
+	UEcoSubSystem* EcoSysPtr;
+
+	//经济倍率
+	UPROPERTY(BlueprintReadWrite)
+	float EcoMagnification = 1.0;
 	
 };
  

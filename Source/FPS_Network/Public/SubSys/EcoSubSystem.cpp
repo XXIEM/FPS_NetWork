@@ -28,5 +28,7 @@ bool UEcoSubSystem::AddNode(FString Playername)
 	FPlayerEcoNode NewNode;
 	NewNode.PlayerName = Playername;
 	PlayerEcoArray.Add(NewNode);
+
+	return true;
 }
 

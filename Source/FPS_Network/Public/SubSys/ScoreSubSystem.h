@@ -41,9 +41,10 @@ class FPS_NETWORK_API UScoreSubSystem : public UInstanceSubSys
 	//销毁
 	virtual void Deinitialize();
 
+public:
 	//添加得分
 	UFUNCTION(BlueprintCallable, Category="ScoreManage")
-	bool Addscore(FString PlayerName, float delta);
+	bool AddScore(FString PlayerName, float delta);
 	
 	//比较得分排名
 	UFUNCTION(BlueprintCallable, Category="ScoreManage")

@@ -22,7 +22,7 @@ void UScoreSubSystem::Deinitialize()
 }
 
 //依据角色名进行加分
-bool UScoreSubSystem::Addscore(FString PlayerName, float delta)
+bool UScoreSubSystem::AddScore(FString PlayerName, float delta)
 {
 	for(int i = 0;i<ScoreArray.Num();i++)
 	{
@@ -69,4 +69,6 @@ bool UScoreSubSystem::AddNode(FString Playername)
 	FScoreNode NewNode;
 	NewNode.PlayerName = Playername;
 	ScoreArray.Add(NewNode);
+
+	return true;
 }

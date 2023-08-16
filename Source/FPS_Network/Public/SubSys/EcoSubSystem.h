@@ -21,7 +21,7 @@ struct FPlayerEcoNode
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class FPS_NETWORK_API UEcoSubSystem : public UInstanceSubSys
 {
 	GENERATED_BODY()

@@ -24,7 +24,8 @@ public:
 	//static的物品栏Item的type
 	static const FPrimaryAssetType WeaponItemType;
 	static const FPrimaryAssetType MissileItemType;
-
+	//任务类的type
+	static const FPrimaryAssetType TaskItemType;
 
 	//Return当前manager的object
 	static UFPSAssetManager& Get();
