@@ -143,13 +143,16 @@ class AWeaponBase:AFPS_WeaponBase
             {
                 RecoilDown();
                 StopUp();
+                StopFire();
+                CallReloadMontage();
+                
             }
     }
 
     UFUNCTION()
     void Reload()
     {
-        if(CurrentBulletNum<MaxCurrentBulletNum && TotalBulletNum+CurrentBulletNum>MaxCurrentBulletNum && TotalBulletNum>0)
+        if(CurrentBulletNum<MaxCurrentBulletNum && TotalBulletNum+CurrentBulletNum>=MaxCurrentBulletNum && TotalBulletNum>0)
         {
             TotalBulletNum -= MaxCurrentBulletNum-CurrentBulletNum;
             CurrentBulletNum = MaxCurrentBulletNum;
@@ -162,7 +165,8 @@ class AWeaponBase:AFPS_WeaponBase
 
     }
     UFUNCTION(BlueprintEvent)
-    void CallUIRelordUpdate(){}
-
+    void CallUIReloadUpdate(){}
+    UFUNCTION(BlueprintEvent)
+    void CallReloadMontage(){}
 
 }

@@ -1,8 +1,10 @@
 class AMainCharacter:AFPS_NetworkCharacter
 {
-    UPROPERTY(DefaultComponent,Attach=CharacterMesh0,AttachSocket=head)
+
+
+    UPROPERTY(DefaultComponent,Attach=CharacterMesh0,AttachSocket = head)
     UCineCameraComponent Camera;
-    default Camera.bUsePawnControlRotation = true;
+    //default Camera.bUsePawnControlRotation = true;
 
 
 
@@ -20,6 +22,9 @@ class AMainCharacter:AFPS_NetworkCharacter
 
     UPROPERTY(Replicated)
     bool bIsFire = false;//是否射击
+
+    UPROPERTY(Replicated)
+    bool bIsReload = false;//是否换弹
 
     UPROPERTY()
     UClass Weapon_AR4;
@@ -126,7 +131,7 @@ class AMainCharacter:AFPS_NetworkCharacter
         ExistGun[CurrentInventoryIndex].AttachToComponent(Mesh,n"VB Weapon",EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,true);
         WeaponBoneTrans = Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).AimPointTest.GetRelativeTransform();
         Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).MainCharacter = this;
-        Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).CallUIRelordUpdate();//更新UI的弹药量
+        Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).CallUIReloadUpdate();//更新UI的弹药量
 
         //ExistGun[i].DetachFromActor(EDetachmentRule::KeepRelative,EDetachmentRule::KeepRelative,EDetachmentRule::KeepRelative);
         //ExistGun[i].SetActorLocation(FVector(0,0,-200));
@@ -163,7 +168,7 @@ class AMainCharacter:AFPS_NetworkCharacter
                 {
                     ExistGun[i].SetActorHiddenInGame(false);
                     WeaponBoneTrans = Cast<AWeaponBase>(ExistGun[i]).AimPointTest.GetRelativeTransform();
-                    Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).CallUIRelordUpdate();//更新UI的弹药量
+                    Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).CallUIReloadUpdate();//更新UI的弹药量
                 }
             }
             //Print(ExistGun[i].GetActorLabel());
@@ -285,8 +290,8 @@ class AMainCharacter:AFPS_NetworkCharacter
     UFUNCTION(BlueprintOverride)
     void StartRelord()
     {
-        Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).Reload();
-        Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).CallUIRelordUpdate();
+        //Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).CallUIReloadUpdate();
+        Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).CallReloadMontage();
         Print("Relord!!");
     }
     UFUNCTION(BlueprintOverride)
