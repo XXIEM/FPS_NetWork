@@ -1,10 +1,6 @@
 {
 	"FileVersion": 3,
-<<<<<<< HEAD
-	"EngineAssociation": "{C09B060C-4852-4E60-9390-8EAE475C8FA1}",
-=======
 	"EngineAssociation": "{A1AF59D8-4FE9-DE55-B0E0-DE9FFB294FF4}",
->>>>>>> 4f7f156d51d5a85558fd5bc1aea71f6ebc1da681
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -28,7 +24,6 @@
 			]
 		},
 		{
-<<<<<<< HEAD
 			"Name": "GameplayAbilities",
 			"Enabled": true
 		},
@@ -48,10 +43,10 @@
 			"Name": "AGRPRO",
 			"Enabled": true,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/c4f13f7fc2c048d8ad4985ecfbf4f6c6"
-=======
+		},
+		{
 			"Name": "GeometryScripting",
 			"Enabled": true
->>>>>>> 4f7f156d51d5a85558fd5bc1aea71f6ebc1da681
 		}
 	]
 }
