@@ -43,7 +43,7 @@ AFPS_NetworkCharacter::AFPS_NetworkCharacter()
 
 	//初始化物品栏
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComp"));
-	
+	CurrentState = ECharacterState::STATE_BASE;
 
 }
 
@@ -144,7 +144,8 @@ UAbilitySystemComponent* AFPS_NetworkCharacter::GetAbilitySystemComponent() cons
 
 void AFPS_NetworkCharacter::Move(const FInputActionValue& Value)
 {
-	// input is a Vector2D
+	// input is a Vector2
+	
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	if (Controller != nullptr)
