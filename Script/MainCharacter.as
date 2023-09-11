@@ -33,6 +33,7 @@ class AMainCharacter:AFPS_NetworkCharacter
     UPROPERTY()
     AActor SpawnGun = nullptr;
 
+    //绘制的枪的实例组
     UPROPERTY(Replicated)
     TArray<AActor> ExistGun;
 
@@ -98,7 +99,6 @@ class AMainCharacter:AFPS_NetworkCharacter
             // {
             //     ExistGun.Add(SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0))); 
             // }
-            AWeaponBase Test;
             ExistGun[Index]=SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0));
             
         }
@@ -441,15 +441,15 @@ class AMainCharacter:AFPS_NetworkCharacter
     void UseInventoryThreeOnServer()
     {
 
-        SwitchWeaponMontageIn();
-        // CurrentInventoryIndex = 2;
+        //SwitchWeaponMontageIn();
+        CurrentInventoryIndex = 2;
         // // UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
         // // if(InWeapon!=nullptr)
         // // {
         // //     SetWeaponBP(InWeapon);
         // //     LastWeapon = InWeapon;
         // // }
-        // SwitchWeaponBP(CurrentInventoryIndex);
+        SwitchWeaponBP(CurrentInventoryIndex);
         // SwitchWeaponMontageOut();
     }
 
