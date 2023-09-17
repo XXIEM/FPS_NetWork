@@ -115,6 +115,8 @@ class AWeaponBase:AFPS_WeaponBase
     UFUNCTION()
     void SpawnBullet()
     {
+        if(MainCharacter.CurrentState != ECharacterState::STATE_SPRINT && MainCharacter.CurrentState != ECharacterState::STATE_RELORD)
+        {
             if(CurrentBulletNum>0)
             {
                 FVector SLoc=SkeletalMesh.GetSocketLocation(n"FireLoc");
@@ -144,9 +146,16 @@ class AWeaponBase:AFPS_WeaponBase
                 RecoilDown();
                 StopUp();
                 StopFire();
-                CallReloadMontage();
-                
+                if(TotalBulletNum!=0)
+                {
+                    CallReloadMontage();
+                }
             }
+        }
+        else 
+        {
+            StopFire();
+        }
     }
 
     UFUNCTION()

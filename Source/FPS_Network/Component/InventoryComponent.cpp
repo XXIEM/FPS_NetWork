@@ -78,7 +78,7 @@ bool UInventoryComponent::AddInventoryItem(FInventoryItem NewItem)
 			{
 				InventoryItems[i].ItemCount+=NewItem.ItemCount;
 				
-				FPS_NetworkCharacter->CurrentInventoryIndex=i;
+				//FPS_NetworkCharacter->CurrentInventoryIndex=i;
 				//通知UI
 				InventoryItemChanged(InventoryItems);
 				return true;
@@ -90,7 +90,35 @@ bool UInventoryComponent::AddInventoryItem(FInventoryItem NewItem)
 			if(!InventoryItems[i].FPSItem)
 			{
 				InventoryItems[i]=NewItem;
-				FPS_NetworkCharacter->CurrentInventoryIndex = i;
+				//FPS_NetworkCharacter->CurrentInventoryIndex = i;
+				//通知UI
+				InventoryItemChanged(InventoryItems);
+				return true;
+			}
+		}
+	}
+	return false;//物品栏满
+}
+
+bool UInventoryComponent::AddInventoryItemByIndex(FInventoryItem NewItem, int32 Index_Add)
+{
+		//只在服务器操作数据
+	if(GetOwner()->GetLocalRole() == ROLE_Authority)
+	{
+		if(!NewItem.IsValid())
+		{
+			UE_LOG(LogTemp,Warning,TEXT("NewItem是空指针"));
+			return false;
+		}
+
+	
+		//遍历找空位置
+		for(SIZE_T i = 0;i<InventoryItems.Num();i++)
+		{
+			if(!InventoryItems[i].FPSItem && i==Index_Add)
+			{
+				InventoryItems[i]=NewItem;
+				//FPS_NetworkCharacter->CurrentInventoryIndex = i;
 				//通知UI
 				InventoryItemChanged(InventoryItems);
 				return true;

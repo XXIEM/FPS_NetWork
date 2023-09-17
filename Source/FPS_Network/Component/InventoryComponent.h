@@ -61,6 +61,10 @@ public:
 	UFUNCTION(BlueprintCallable,Category=Inventory)
 	bool AddInventoryItem(FInventoryItem NewItem);
 
+	//增加指定位置的新实例
+	UFUNCTION(BlueprintCallable,Category=Inventory)
+	bool AddInventoryItemByIndex(FInventoryItem NewItem, int32 Index_Add);
+
 	//移除数组里的元素
 	UFUNCTION(BlueprintCallable,Category=Inventory)
 	void RemoveInventoryItem(int32 Index_Remove);

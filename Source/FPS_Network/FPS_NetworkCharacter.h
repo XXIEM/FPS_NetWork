@@ -13,6 +13,16 @@
 #include "Components/TimelineComponent.h"
 #include "FPS_NetworkCharacter.generated.h"
 
+UENUM(BlueprintType)
+enum class ECharacterState : uint8
+{
+	STATE_BASE,
+	STATE_SPRINT,
+	STATE_CROUCH,
+	STATE_SLIDE,
+	STATE_RELORD
+};
+
 class UInventoryComponent;
 UCLASS(config=Game)
 class AFPS_NetworkCharacter : public ACharacter
@@ -95,6 +105,10 @@ public:
 	//物品栏当前序列
 	UPROPERTY(Replicated,EditAnywhere,BlueprintReadWrite,Category=Inventory,meta = (AllowPrivateAccess = "true"))
 	int CurrentInventoryIndex=-1;
+
+	//角色当前状态
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=State,meta = (AllowPrivateAccess = "true"))
+	ECharacterState CurrentState;
 	
 
 protected:

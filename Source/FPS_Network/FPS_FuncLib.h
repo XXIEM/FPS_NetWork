@@ -23,7 +23,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static void SetMaxWalkspeed(ACharacter* Character,float Speed);
 
+	//设置角色最大蹲伏速度
+	UFUNCTION(BlueprintCallable)
+	static void SetMaxCrouchspeed(ACharacter* Character,float Speed);
+
 	//获取look at旋转
 	UFUNCTION(BlueprintCallable)
 	static FRotator FindLookAtRotator(FVector Start,FVector Target) ;
+	
 };
