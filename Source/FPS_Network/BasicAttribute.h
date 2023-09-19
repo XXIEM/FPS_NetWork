@@ -6,6 +6,7 @@
 #include "AttributeSet.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectExtension.h"
+#include "Abilities/GameplayAbilityTargetActor.h"
 #include "BasicAttribute.generated.h"
 
 /**
@@ -27,7 +28,7 @@ class FPS_NETWORK_API UBasicAttribute : public UAttributeSet
 public:
 	//生命值
 	UPROPERTY(BlueprintReadOnly)
-	FGameplayAttributeData Health=100;
+	FGameplayAttributeData Health=100.0f;
 	ATTRIBUTE_ACCESSORS(UBasicAttribute,Health);
 
 	UPROPERTY(BlueprintReadOnly)
@@ -43,8 +44,19 @@ public:
 	FGameplayAttributeData MaxArmor=100;
 	ATTRIBUTE_ACCESSORS(UBasicAttribute,MaxArmor);
 
-	
-	
+	UFUNCTION(NetMulticast, Reliable) // @note: could mark as unreliable once we moved the 'state' out of scharacter (eg. once its cosmetic only)
+	void MulticastHealthChanged(AActor* InstigatorActor, float NewHealth, float Delta);
+
+	UFUNCTION(NetMulticast, Unreliable) // Used for cosmetic changes only
+	void MulticastRageChanged(AActor* InstigatorActor, float NewRage, float Delta);
+
+public:	
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	bool Kill(AActor* InstigatorActor);
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	bool IsAlive() const;
 	
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;

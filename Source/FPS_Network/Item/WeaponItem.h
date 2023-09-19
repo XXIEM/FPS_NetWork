@@ -10,6 +10,14 @@
 /**
  * 
  */
+
+UENUM(BlueprintType)
+enum class EInWeaponType : uint8
+{
+	MainWeapon,
+	SecondaryWeapon,
+	Knife
+};
 UCLASS()
 class FPS_NETWORK_API UWeaponItem : public UFPSItem
 {
@@ -19,4 +27,13 @@ public:
 	{
 		ItemType = UFPSAssetManager::WeaponItemType;
 	}
+	
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=Max,meta = (AllowPrivateAccess = "true"))
+	UClass* WeaponBP;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=Max,meta = (AllowPrivateAccess = "true"))
+	UClass* WeaponPickUp;
+
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=Max,meta = (AllowPrivateAccess = "true"))
+	EInWeaponType WeaponType;
 };

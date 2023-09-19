@@ -17,6 +17,11 @@ void AFPS_FuncLib::SetMaxWalkspeed(ACharacter* Character, float Speed)
 	Character->GetCharacterMovement()->MaxWalkSpeed = Speed;
 }
 
+void AFPS_FuncLib::SetMaxCrouchspeed(ACharacter* Character, float Speed)
+{
+	Character->GetCharacterMovement()->MaxWalkSpeedCrouched = Speed;
+}
+
 FRotator AFPS_FuncLib::FindLookAtRotator(FVector Start,FVector Target)
 {
 	return UKismetMathLibrary::FindLookAtRotation(Start,Target);

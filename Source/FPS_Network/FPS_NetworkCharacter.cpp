@@ -11,7 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
 #include "GameFramework/PlayerController.h"
-
+#include "Net/UnrealNetwork.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AFPS_NetworkCharacter
@@ -44,10 +44,16 @@ AFPS_NetworkCharacter::AFPS_NetworkCharacter()
 
 	//初始化物品栏
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComp"));
-	
+	CurrentState = ECharacterState::STATE_BASE;
 
 }
 
+void AFPS_NetworkCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME_CONDITION(AFPS_NetworkCharacter,CurrentInventoryIndex,COND_None);
+	DOREPLIFETIME_CONDITION(AFPS_NetworkCharacter,InventoryComponent,COND_None);
+}
 
 void AFPS_NetworkCharacter::BeginPlay()
 {
@@ -119,6 +125,10 @@ void AFPS_NetworkCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 		EnhancedInputComponent->BindAction(FireAction,ETriggerEvent::Started,this,&AFPS_NetworkCharacter::StartFire);
 		EnhancedInputComponent->BindAction(FireAction,ETriggerEvent::Canceled,this,&AFPS_NetworkCharacter::EndFire);
 
+		//Relord
+		EnhancedInputComponent->BindAction(RelordAction,ETriggerEvent::Started,this,&AFPS_NetworkCharacter::StartRelord);
+		EnhancedInputComponent->BindAction(RelordAction,ETriggerEvent::Canceled,this,&AFPS_NetworkCharacter::EndRelord);
+
 		//Inventory
 		EnhancedInputComponent->BindAction(Inventory_Num1Action, ETriggerEvent::Triggered, this, &AFPS_NetworkCharacter::UseInventoryOne);
 		EnhancedInputComponent->BindAction(Inventory_Num2Action, ETriggerEvent::Triggered, this, &AFPS_NetworkCharacter::UseInventoryTwo);
@@ -135,7 +145,8 @@ UAbilitySystemComponent* AFPS_NetworkCharacter::GetAbilitySystemComponent() cons
 
 void AFPS_NetworkCharacter::Move(const FInputActionValue& Value)
 {
-	// input is a Vector2D
+	// input is a Vector2
+	
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	if (Controller != nullptr)

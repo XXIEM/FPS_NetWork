@@ -14,20 +14,23 @@ struct  FWeaponStruct :public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	FString WeaponName;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	float BulletSpread;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	float BulletDamage;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	float FireFrequency;
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
     float RelordSpeed;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	int BulletNum;
 	
 };
 
@@ -78,5 +81,8 @@ public:
 	//根据枪械索引获取表中枪械数据的方法
 	UFUNCTION(BlueprintCallable,Category=DT, meta = (AllowPrivateAccess = "true"))
 	FWeaponStruct GetWeaponStructFromIndex(int Index_i);
-	
+
+public:
+	UFUNCTION(BlueprintImplementableEvent)
+	void InitWeaponNum();
 };

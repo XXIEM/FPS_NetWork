@@ -3,6 +3,26 @@
 
 #include "BasicAttribute.h"
 
+void UBasicAttribute::MulticastRageChanged_Implementation(AActor* InstigatorActor, float NewRage, float Delta)
+{
+	
+}
+
+void UBasicAttribute::MulticastHealthChanged_Implementation(AActor* InstigatorActor, float NewHealth, float Delta)
+{
+	
+}
+
+bool UBasicAttribute::Kill(AActor* InstigatorActor)
+{
+	return false;
+}
+
+bool UBasicAttribute::IsAlive() const
+{
+	return Health.GetBaseValue() > 0;
+}
+
 void UBasicAttribute::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
 	Super::PreAttributeChange(Attribute, NewValue);

@@ -42,7 +42,7 @@ AActor* ABotAICharacter::GetTargetActor() const
 	AAIController* AIC = Cast<AAIController>(GetController());
 	if (AIC)
 	{
-		return Cast<AActor>(AIC->GetBlackboardComponent()->GetValueAsObject(TargetActorKey));
+		return Cast<AFPS_NetworkCharacter>(AIC->GetBlackboardComponent()->GetValueAsObject(TargetActorKey));
 	}
 
 	return nullptr;
@@ -124,5 +124,5 @@ void ABotAICharacter::MulticastPawnSeen_Implementation()
 	// 	// Index of 10 (or anything higher than default of 0) places this on top of any other widget.
 	// 	// May end up behind the minion health bar otherwise.
 	// 	NewWidget->AddToViewport(10);
-	// }
+	// }BlackboardComponent.cpp
 }

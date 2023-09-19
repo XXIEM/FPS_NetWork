@@ -13,6 +13,16 @@
 #include "Components/TimelineComponent.h"
 #include "FPS_NetworkCharacter.generated.h"
 
+UENUM(BlueprintType)
+enum class ECharacterState : uint8
+{
+	STATE_BASE,
+	STATE_SPRINT,
+	STATE_CROUCH,
+	STATE_SLIDE,
+	STATE_RELORD
+};
+
 class UInventoryComponent;
 UCLASS(config=Game)
 class AFPS_NetworkCharacter : public ACharacter
@@ -60,6 +70,10 @@ class AFPS_NetworkCharacter : public ACharacter
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = Input,meta = (AllowPrivateAccess = "true"))
 	class UInputAction* FireAction;
 
+	//** Relord Input Action */
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = Input,meta = (AllowPrivateAccess = "true"))
+	class UInputAction* RelordAction;
+
 	//** Inventory Input Action */
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = Input,meta = (AllowPrivateAccess = "true"))
     class UInputAction* Inventory_Num1Action;
@@ -89,8 +103,12 @@ public:
 	UAbilitySystemComponent* GetAbilitySystemComponent() const;
 
 	//物品栏当前序列
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Inventory,meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated,EditAnywhere,BlueprintReadWrite,Category=Inventory,meta = (AllowPrivateAccess = "true"))
 	int CurrentInventoryIndex=-1;
+
+	//角色当前状态
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=State,meta = (AllowPrivateAccess = "true"))
+	ECharacterState CurrentState;
 	
 
 protected:
@@ -105,6 +123,7 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartAim();
 
+	
 	UFUNCTION(BlueprintImplementableEvent)
 	void EndAim();
 
@@ -128,6 +147,13 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void EndFire();
+
+	/** Called for Fire input */
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartRelord();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void EndRelord();
 
 	/** Called for Inventory input */
 	UFUNCTION(BlueprintImplementableEvent)
@@ -165,7 +191,7 @@ protected:
 
 protected:
 	//引入组件
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category=Component,meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated,VisibleAnywhere,BlueprintReadOnly,Category=Component,meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInventoryComponent> InventoryComponent;
 
 public:

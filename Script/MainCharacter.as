@@ -1,10 +1,12 @@
 class AMainCharacter:AFPS_NetworkCharacter
 {
-    UPROPERTY(DefaultComponent,Attach=CharacterMesh0,AttachSocket=head)
-    UCameraComponent Camera;
-    default Camera.bUsePawnControlRotation = true;
 
 
+    UPROPERTY(DefaultComponent,Attach=CharacterMesh0,AttachSocket = head)
+    UCineCameraComponent Camera;
+    //default Camera.bUsePawnControlRotation = true;
+
+    
 
     UPROPERTY(Replicated)
     bool bIsAim = false;//是否瞄准
@@ -21,6 +23,9 @@ class AMainCharacter:AFPS_NetworkCharacter
     UPROPERTY(Replicated)
     bool bIsFire = false;//是否射击
 
+    UPROPERTY(Replicated)
+    bool bIsReload = false;//是否换弹
+
     UPROPERTY()
     UClass Weapon_AR4;
 
@@ -28,11 +33,26 @@ class AMainCharacter:AFPS_NetworkCharacter
     UPROPERTY()
     AActor SpawnGun = nullptr;
 
+    //绘制的枪的实例组
+    UPROPERTY(Replicated)
+    TArray<AActor> ExistGun;
+
+    UPROPERTY()
+    UClass LastWeapon;//绘制的上一个枪
+
+    //绘制后的枪骨骼的trans
+    UPROPERTY()
+    FTransform WeaponBoneTrans;
+
+    //Relord的UI变量
+    UPROPERTY()
+    UUserWidget UI_Relord;
+
     //自身变量
-    float WalkSpeed = 300.0f;
+    float WalkSpeed = 200.0f;
     float CrouchSpeed = 150.0f;
-    float SprintSpeed = 600.0f;
-    float SlideSpeed = 450.0f;
+    float SprintSpeed = 500.0f;
+    float SlideSpeed = 400.0f;
 
     
 
@@ -42,64 +62,129 @@ class AMainCharacter:AFPS_NetworkCharacter
     {
         
         //SetWeaponBP();
-
-        if(SpawnGun!=nullptr)
-        {
-        Cast<AWeaponBase>(SpawnGun).MainCharacter=this;
-        }
-
+      
+        // if(SpawnGun!=nullptr)
+        // {
+        // Cast<AWeaponBase>(SpawnGun).MainCharacter=this;
+        // }
+        WeaponMove();
+        AddMainUI();
+        InitWeaponList();
         
     }
 
-
-
-
-    //绘制枪的蓝图
-    UFUNCTION()
-    void SetWeaponBP(UClass InWeapon)
+    UFUNCTION(Server)
+    void InitWeaponList()
     {
+        ExistGun.SetNum(3);
+        
+    }
 
-   
-        if(SpawnGun==nullptr)
+    UFUNCTION(BlueprintEvent)
+    void WeaponMove(){}
+    UFUNCTION(BlueprintEvent)
+    void AddMainUI(){}
+
+
+    UFUNCTION()//初始化武器
+    void InitWeaponBP(TSubclassOf<AWeaponBase>InWeapon, int Index)
+    {
+        if(ExistGun.Num()<=3)
         {
-            SpawnGun = SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0));
-            SpawnGun.ActorScale3D=FVector(1,1,1);
-            SpawnGun.AttachToComponent(Mesh,n"Weapon_Attach",EAttachmentRule::KeepRelative,EAttachmentRule::KeepRelative,EAttachmentRule::KeepRelative,true);
+            // if(HasAuthority())
+            // {
+            //     ExistGun.Add(SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0))); 
+            // }
+            // else
+            // {
+            //     ExistGun.Add(SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0))); 
+            // }
+            ExistGun[Index]=SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0));
+            
         }
-        else
+  
+        ExistGun[CurrentInventoryIndex].ActorScale3D=FVector(1,1,1);
+        ExistGun[CurrentInventoryIndex].AttachToComponent(Mesh,n"VB Weapon",EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,true);
+        WeaponBoneTrans = Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).AimPointTest.GetRelativeTransform();
+        Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).MainCharacter = this;
+        Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).CallUIReloadUpdate();//更新UI的弹药量
+
+        //ExistGun[i].DetachFromActor(EDetachmentRule::KeepRelative,EDetachmentRule::KeepRelative,EDetachmentRule::KeepRelative);
+        //ExistGun[i].SetActorLocation(FVector(0,0,-200));
+        for(auto i = 0 ;i<ExistGun.Num();i++)
         {
-            SpawnGun.DestroyActor();
-            SpawnGun = nullptr;
-            SpawnGun = SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0));
-            SpawnGun.ActorScale3D=FVector(1,1,1);
-            SpawnGun.AttachToComponent(Mesh,n"Weapon_Attach",EAttachmentRule::KeepRelative,EAttachmentRule::KeepRelative,EAttachmentRule::KeepRelative,true);
+            if(i!=CurrentInventoryIndex)
+            {
+                if(ExistGun[i]!=nullptr)
+                {
+                    ExistGun[i].SetActorHiddenInGame(true);
+                }
+            }
+            
         }
         
         
     }
 
+    UFUNCTION()//切换武器
+    void SwitchWeaponBP(int Index)
+    {
+        for(int i = 0;i<ExistGun.Num();i++)
+        {
+            if(Index!=i)
+            {
+                if(ExistGun[i]!=nullptr)
+                {
+                    ExistGun[i].SetActorHiddenInGame(true);
+                }
+            }
+            else
+            {
+                if(ExistGun[i]!=nullptr)
+                {
+                    ExistGun[i].SetActorHiddenInGame(false);
+                    WeaponBoneTrans = Cast<AWeaponBase>(ExistGun[i]).AimPointTest.GetRelativeTransform();
+                    Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).CallUIReloadUpdate();//更新UI的弹药量
+                }
+            }
+            //Print(ExistGun[i].GetActorLabel());
+        }
+        
+
+    }
+    UFUNCTION(BlueprintEvent)//播放切换武器蒙太奇
+    void SwitchWeaponMontageIn(){}
+    UFUNCTION(BlueprintEvent)//播放切换武器蒙太奇
+    void SwitchWeaponMontageOut(){}
     
 
     //——————————————————————————————————————重载输入映射————————————————————————————————————————————————————————
 
     //瞄准输入
-
-
-
     UFUNCTION(BlueprintOverride)
     void StartAim()
     {
-        StartAimOnServer();
-  
-        //AimTimeline.Play();
-     
-        
+
+        bIsAim = true;
+        if(CurrentState!=ECharacterState::STATE_SPRINT && CurrentState!=ECharacterState::STATE_RELORD)
+        {
+            StartAimSwitchCurve();
+        }
     }
     UFUNCTION(BlueprintOverride)
     void EndAim()
     {
-        EndAimOnServer();
+        bIsAim = false;
+        if(CurrentState!=ECharacterState::STATE_SPRINT && CurrentState!=ECharacterState::STATE_RELORD)
+        {
+            EndAimSwitchCurve();
+        }
     }
+    UFUNCTION(BlueprintEvent)
+    void StartAimSwitchCurve(){}
+    UFUNCTION(BlueprintEvent)
+    void EndAimSwitchCurve(){}
+    
 
 
     
@@ -111,13 +196,19 @@ class AMainCharacter:AFPS_NetworkCharacter
         {
             if(!bIsCrouch)//本地执行逻辑
             {
-                AFPS_FuncLib::SetMaxWalkspeed(this,CrouchSpeed);
-                StartCrouchOnServer();
+                CurrentState = ECharacterState::STATE_CROUCH;
+                Crouch();
+                bIsCrouch = true;
+                
+                
             }
             else
             {
-                AFPS_FuncLib::SetMaxWalkspeed(this,WalkSpeed);
-                EndCrouchOnServer();
+                CurrentState = ECharacterState::STATE_BASE;
+                UnCrouch();
+                bIsCrouch = false;
+                
+                
             }
         }
         else
@@ -137,15 +228,30 @@ class AMainCharacter:AFPS_NetworkCharacter
     UFUNCTION(BlueprintOverride)
     void StartSprint()
     {
-        AFPS_FuncLib::SetMaxWalkspeed(this,SprintSpeed);
-        StartSprintOnServer();
+        if(CurrentState!=ECharacterState::STATE_RELORD)
+        {
+            AFPS_FuncLib::SetMaxWalkspeed(this,SprintSpeed);
+            StartSprintOnServer();
+        }
         
     }
     UFUNCTION(BlueprintOverride)
     void EndSprint()
     {
-        AFPS_FuncLib::SetMaxWalkspeed(this,WalkSpeed);
-        EndSprintOnServer();
+        if(CurrentState!=ECharacterState::STATE_RELORD)
+        {
+            AFPS_FuncLib::SetMaxWalkspeed(this,WalkSpeed);
+            EndSprintOnServer();
+        }
+        else if(bIsFire==true)
+        {
+            StartFireOnServer();
+        }
+        else if(bIsAim==true)
+        {
+            StartAim();
+        }
+
     }
 
 
@@ -154,7 +260,6 @@ class AMainCharacter:AFPS_NetworkCharacter
     void StartFire()
     {
         StartFireOnServer();
-
     }
     UFUNCTION(BlueprintOverride)
     void EndFire()
@@ -166,95 +271,66 @@ class AMainCharacter:AFPS_NetworkCharacter
     UFUNCTION(BlueprintOverride)
     void UseInventoryOne()//键位1
     {
-        CurrentInventoryIndex = 0;
-        UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
-        if(InWeapon!=nullptr)
-        {
-            SetWeaponBP(InWeapon);
-        }
-       
+        
+        UseInventoryOneOnServer();
+        //SwitchWeaponBP(CurrentInventoryIndex);
     }
     UFUNCTION(BlueprintOverride)
     void UseInventoryTwo()//键位2
     {
-        CurrentInventoryIndex = 1;
-        UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
-        if(InWeapon!=nullptr)
-        {
-            SetWeaponBP(InWeapon);
-        }
+        UseInventoryTwoOnServer();
+        //SwitchWeaponBP(CurrentInventoryIndex);
     }
     UFUNCTION(BlueprintOverride)
     void UseInventoryThree()//键位3
     {
-        CurrentInventoryIndex = 2;
-        UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
-        if(InWeapon!=nullptr)
-        {
-            SetWeaponBP(InWeapon);
-        }
+        UseInventoryThreeOnServer();
+        
     }
     UFUNCTION(BlueprintOverride)
     void DropTheWeapon()
     {
-        if(SpawnGun!=nullptr)
-        {
-            UClass DropWeaponBP = this.InventoryComponent.Get_WeaponPickUp(CurrentInventoryIndex);
-            AActor DropWeapon = SpawnActor(DropWeaponBP,GetActorLocation()+GetActorForwardVector()*130,FRotator(0,0,0));
-            
-
-            this.InventoryComponent.RemoveInventoryItem(CurrentInventoryIndex);
-            SpawnGun.DestroyActor();
-            SpawnGun = nullptr;
-            
-            
-            
-            CurrentInventoryIndex = this.InventoryComponent.FindNextExistWeapon();
-            if(CurrentInventoryIndex != -1)
-            {
-                UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
-                if(InWeapon!=nullptr)
-                {
-                    SetWeaponBP(InWeapon);
-                }
-            }
-        }
-        
-       
 
     }
+
+    UFUNCTION(BlueprintOverride)
+    void StartRelord()
+    {
+        //Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).CallUIReloadUpdate();
+        if(Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).TotalBulletNum!=0)
+        {
+            EndSprint();
+            Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).CallReloadMontage();
+            Print("Relord!!");
+        }
+    }
+    UFUNCTION(BlueprintOverride)
+    void EndRelord()
+    {
+        
+    }
+   
     
 
     //————————————————————————————————————————————————————————————————————————————————————————————————————————
-
-    //———————————————————————————————————————网络同步输入映射——————————————————————————————————————————————————
-    //服务端瞄准输入
-    UFUNCTION(Server)
-    void StartAimOnServer()
-    {
-            bIsAim = true;
-    }
-    UFUNCTION(Server)
-    void EndAimOnServer()
-    {
-            bIsAim = false;
-    }
+    //
 
 
     //服务端下蹲/滑铲输入
     UFUNCTION(Server)
     void StartCrouchOnServer()
     {
-     
-        bIsCrouch = true;
-        AFPS_FuncLib::SetMaxWalkspeed(this,CrouchSpeed);
+        
+        //AFPS_FuncLib::SetMaxWalkspeed(this,CrouchSpeed);
 
     }
     UFUNCTION(Server)
     void EndCrouchOnServer()
     {
-        bIsCrouch = false;
-        AFPS_FuncLib::SetMaxWalkspeed(this,WalkSpeed);
+        
+
+        
+        //AFPS_FuncLib::SetMaxWalkspeed(this,WalkSpeed);
     }
 
 
@@ -262,13 +338,17 @@ class AMainCharacter:AFPS_NetworkCharacter
     UFUNCTION(Server)
     void StartSprintOnServer()
     {
+        
         bIsCrouch = false;
         bIsSprint = true;
+        CurrentState = ECharacterState::STATE_SPRINT;
+        UnCrouch();
         AFPS_FuncLib::SetMaxWalkspeed(this,SprintSpeed);
     }
     UFUNCTION(Server)
     void EndSprintOnServer()
     {
+        CurrentState = ECharacterState::STATE_BASE;
         bIsSprint = false;
         AFPS_FuncLib::SetMaxWalkspeed(this,WalkSpeed);
     }
@@ -278,44 +358,100 @@ class AMainCharacter:AFPS_NetworkCharacter
     UFUNCTION(Server)
     void StartSlideOnServer()
     {
+        CurrentState = ECharacterState::STATE_SLIDE;
         bIsSlide = true;
-        AFPS_FuncLib::SetMaxWalkspeed(this,SlideSpeed);
+        AFPS_FuncLib::SetMaxCrouchspeed(this,SlideSpeed);
+        Crouch();
+        
     }    
     UFUNCTION(Server)
     void EndSlideOnServer()
     {
         bIsSlide = false;
+        AFPS_FuncLib::SetMaxCrouchspeed(this,CrouchSpeed);
+        UnCrouch();
         if(bIsSprint)
         {
+            CurrentState = ECharacterState::STATE_SPRINT;
             AFPS_FuncLib::SetMaxWalkspeed(this,SprintSpeed);
         }
         else
         {
+            CurrentState = ECharacterState::STATE_BASE;
             AFPS_FuncLib::SetMaxWalkspeed(this,WalkSpeed);
         }
-        
     }    
 
+   
+
     //服务端发射输入
-    UFUNCTION(Server)
+    UFUNCTION(NetMulticast)
     void StartFireOnServer()
     {
         bIsFire = true;
-        if(SpawnGun!=nullptr)
+        if(CurrentInventoryIndex != -1 && CurrentState!=ECharacterState::STATE_SPRINT && CurrentState!=ECharacterState::STATE_RELORD)
         {
-            Cast<AWeaponBase>(SpawnGun).Fire(this);
+            if(ExistGun[CurrentInventoryIndex]!=nullptr)
+            {
+                Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).Fire(this);
+            }
         }
     }
-    UFUNCTION(Server)
+    UFUNCTION(NetMulticast)
     void EndFireOnServer()
     {
         bIsFire = false;
-        if(SpawnGun!=nullptr)
+        if(CurrentInventoryIndex != -1)
         {
-            Cast<AWeaponBase>(SpawnGun).StopFire();
+            if(ExistGun[CurrentInventoryIndex]!=nullptr)
+            {
+                Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).StopFire();
+            }
         }
     }
 
+    //服务端物品栏输入
+    UFUNCTION(Server)
+    void UseInventoryOneOnServer()
+    {
+        CurrentInventoryIndex = 0;
+        // UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
+        // if(InWeapon!=nullptr)
+        // {
+        //     SetWeaponBP(InWeapon);
+        //     LastWeapon = InWeapon;
+        // }
+        SwitchWeaponBP(CurrentInventoryIndex);
+    }
+
+    UFUNCTION(Server)
+    void UseInventoryTwoOnServer()
+    {
+        CurrentInventoryIndex = 1;
+        // UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
+        // if(InWeapon!=nullptr)
+        // {
+        //     SetWeaponBP(InWeapon);
+        //     LastWeapon = InWeapon;
+        // }
+        SwitchWeaponBP(CurrentInventoryIndex);
+    }
+
+    UFUNCTION(Server)
+    void UseInventoryThreeOnServer()
+    {
+
+        //SwitchWeaponMontageIn();
+        CurrentInventoryIndex = 2;
+        // // UClass InWeapon = this.InventoryComponent.Get_WeaponBP(CurrentInventoryIndex);
+        // // if(InWeapon!=nullptr)
+        // // {
+        // //     SetWeaponBP(InWeapon);
+        // //     LastWeapon = InWeapon;
+        // // }
+        SwitchWeaponBP(CurrentInventoryIndex);
+        // SwitchWeaponMontageOut();
+    }
 
     
 
