@@ -27,11 +27,18 @@ void UWindFieldComponent::BeginPlay()
 	
 }
 
+void UWindFieldComponent::InitializeComponent()
+{
+	Super::InitializeComponent();
+	const auto Owner = GetOwner();
+}
+
 void UWindFieldComponent::GenerateWindField_Implementation(TArray<FWindFieldGenerationInfo>& InFieldGenerationInfos,
-	UPrimitiveComponent* InTargetMesh)
+                                                           UPrimitiveComponent* InTargetMesh)
 {
 	const auto World = GetWorld();
 	check(World);
+	check(TargetMesh);
 	for (const FWindFieldGenerationInfo Info : InFieldGenerationInfos)
 	{
 		const auto SpawnedActor  = Cast<AWindFieldBase>(World->SpawnActor(Info.SpawnFieldClass.GetDefaultObject()->GetClass()));
@@ -44,13 +51,3 @@ void UWindFieldComponent::GenerateWindField_Implementation(TArray<FWindFieldGene
 		SpawnedActor->WindFieldGenerationInfo = Info;
 	}
 }
-
-class FTestShader : public FGlobalShader
-{
-	DECLARE_GLOBAL_SHADER(FTestShader);
-	SHADER_USE_PARAMETER_STRUCT(FTestShader,FGlobalShader);
-	
-	class FMyShaderPerm : SHADER_PERMUTATION_INT("TEST",1);
-	BEGIN_SHADER_PARAMETER_STRUCT(FParameters,)
-	END_SHADER_PARAMETER_STRUCT()
-};

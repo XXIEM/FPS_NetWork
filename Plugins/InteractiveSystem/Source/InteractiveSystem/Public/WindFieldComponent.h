@@ -33,6 +33,8 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+	virtual void InitializeComponent() override;
 public:
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
 	void GenerateWindField(TArray<FWindFieldGenerationInfo>& InFieldGenerationInfos,UPrimitiveComponent* InTargetMesh);
@@ -41,7 +43,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="WildField")
 	TArray<FWindFieldGenerationInfo> FieldGenerationInfos;
 
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="WildField")
+	UPROPERTY(VisibleDefaultsOnly,BlueprintReadWrite,Category="WildField")
 	TObjectPtr<UPrimitiveComponent> TargetMesh;
 	
 };
