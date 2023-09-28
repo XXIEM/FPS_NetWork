@@ -87,7 +87,7 @@ class AMainCharacter:AFPS_NetworkCharacter
 
 
     UFUNCTION()//初始化武器
-    void InitWeaponBP(TSubclassOf<AWeaponBase>InWeapon, int Index)
+    void InitWeaponBP(TSubclassOf<AFPS_WeaponBase>InWeapon, int Index)
     {
         if(ExistGun.Num()<=3)
         {

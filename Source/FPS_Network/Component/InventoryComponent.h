@@ -92,7 +92,7 @@ public:
 
 	//获取武器蓝图的方法
 	UFUNCTION(BlueprintCallable,Category=Inventory)
-	UClass* Get_WeaponBP(int Index_i);
+	TSubclassOf<AFPS_WeaponBase> Get_WeaponBP(int Index_i);
 
 	//获取武器拾取类蓝图的方法
 	UFUNCTION(BlueprintCallable,Category=Inventory)

@@ -158,7 +158,7 @@ void UInventoryComponent::SwapInventoryItem(int32 Index_i, int32 Index_j)
 	InventoryItemChanged(InventoryItems);
 }
 
-UClass* UInventoryComponent::Get_WeaponBP(int Index_i)
+TSubclassOf<AFPS_WeaponBase> UInventoryComponent::Get_WeaponBP(int Index_i)
 {
 	if(InventoryItems[Index_i].FPSItem!=nullptr)
 	{

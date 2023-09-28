@@ -6,7 +6,7 @@
 
 const FPrimaryAssetType UFPSAssetManager::WeaponItemType = TEXT("Weapon");
 const FPrimaryAssetType UFPSAssetManager::MissileItemType = TEXT("Missile");
-
+const FPrimaryAssetType UFPSAssetManager::StickyNoteItemType = TEXT("StickyNote");
 
 void UFPSAssetManager::StartInitialLoading()
 {

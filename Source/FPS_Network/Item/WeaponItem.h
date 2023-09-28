@@ -29,7 +29,7 @@ public:
 	}
 	
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=Max,meta = (AllowPrivateAccess = "true"))
-	UClass* WeaponBP;
+	TSubclassOf<AFPS_WeaponBase> WeaponBP;
 	
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=Max,meta = (AllowPrivateAccess = "true"))
 	UClass* WeaponPickUp;

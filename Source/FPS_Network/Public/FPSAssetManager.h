@@ -24,6 +24,7 @@ public:
 	//static的物品栏Item的type
 	static const FPrimaryAssetType WeaponItemType;
 	static const FPrimaryAssetType MissileItemType;
+	static const FPrimaryAssetType StickyNoteItemType;
 
 
 	//Return当前manager的object
