@@ -66,6 +66,7 @@ void AFPS_NetworkCharacter::BeginPlay()
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
+		
 	}
 
 	//初始化能力数组

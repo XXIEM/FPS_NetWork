@@ -18,7 +18,7 @@ class FPS_NETWORK_API UStickyNoteItem : public UFPSItem
 public:
 	UStickyNoteItem()
 	{
-		ItemType = UFPSAssetManager::WeaponItemType;
+		ItemType = UFPSAssetManager::StickyNoteItemType;
 	}
 	
 };

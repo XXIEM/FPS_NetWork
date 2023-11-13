@@ -4,18 +4,21 @@
 #include "UI/UI_StickyNotePannel.h"
 
 
-FUpdateUIDelegate UUI_StickyNotePannel::UpdateUIDelegate;
-
-
-void UUI_StickyNotePannel::UpdateUI(TArray<FStickyNodeInfo> StickyNodes)
+void UUI_StickyNotePannel::UpdateStickyNoteUI(const FStickyNodeInfo& StickyNodeInfo)
 {
-	
+	StickyNodeInfos.Add(StickyNodeInfo);
+	UE_LOG(LogTemp,Warning,TEXT("BoardCast!!!"));
 }
 
-void UUI_StickyNotePannel::TriggerUpdateUI(TArray<FStickyNodeInfo> StickyNodes)
+FStickyNoteEvent& UUI_StickyNotePannel::AddMultiDynamicDelegate()
 {
-	if (UpdateUIDelegate.IsBound())
-	{
-		UpdateUIDelegate.Execute(StickyNodes);
-	}
+	
+	return OnStickyNoteEvent;
+}
+
+void UUI_StickyNotePannel::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	OnStickyNoteEvent.AddDynamic(this,&UUI_StickyNotePannel::UpdateStickyNoteUI);
 }

@@ -10,20 +10,28 @@
 /**
  * 
  */
-
-DECLARE_DELEGATE_OneParam(FUpdateUIDelegate, TArray<FStickyNodeInfo>);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FStickyNoteEvent, const FStickyNodeInfo&, StickyNodeInfo);
 UCLASS()
+
 
 class STICKYNOTESSYSTEM_API UUI_StickyNotePannel : public UUserWidget
 {
 	GENERATED_BODY()
 
+
 public:
-	static FUpdateUIDelegate UpdateUIDelegate;//UI更新委托
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="StickyNodeInfo",meta=(AllowPrivateAccess))
+	TArray<FStickyNodeInfo> StickyNodeInfos;
 
-	// 实现更新UI的静态函数，接受一个结构体数组作为参数
-	static void UpdateUI(TArray<FStickyNodeInfo> StickyNodes);
+	UPROPERTY(BlueprintAssignable)
+	FStickyNoteEvent OnStickyNoteEvent;
 
-	static void TriggerUpdateUI(TArray<FStickyNodeInfo> StickyNodes);
-	
+public:
+	UFUNCTION()
+	void UpdateStickyNoteUI(const FStickyNodeInfo& StickyNodeInfo);
+
+	//动态的多播绑定
+	FStickyNoteEvent& AddMultiDynamicDelegate();
+
+	virtual void NativeConstruct() override;
 };

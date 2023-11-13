@@ -24,16 +24,16 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category=Item,meta = (AllowPrivateAccess = "true"))
 	FPrimaryAssetType ItemType;
 
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=Item,meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Item,meta = (AllowPrivateAccess = "true"))
 	FText ItemName;
 
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=Item,meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Item,meta = (AllowPrivateAccess = "true"))
 	FText ItemDiscription;
 
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=Item,meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Item,meta = (AllowPrivateAccess = "true"))
 	UTexture2D* ItemIcon;
 
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=Max,meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Max,meta = (AllowPrivateAccess = "true"))
 	int32 MaxCount;
 	
 

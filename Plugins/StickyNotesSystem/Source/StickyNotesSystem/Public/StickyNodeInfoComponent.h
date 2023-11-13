@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "FPS_Network/Item/StickyNoteItem.h"
 #include "StickyNodeInfoComponent.generated.h"
 
 
@@ -12,17 +13,18 @@ struct FStickyNodeInfo
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=StickyNote)
-	FString Title;//线索标签标题
+public:
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Item,meta = (AllowPrivateAccess = "true"))
+	FText ItemName;
 
-	
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=StickyNote)
-	FString Description;//线索标签内容
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Item,meta = (AllowPrivateAccess = "true"))
+	FText ItemDiscription;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=StickyNote)
-	UTexture2D* ItemIcon;//线索标签图片
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Item,meta = (AllowPrivateAccess = "true"))
+	UTexture2D* ItemIcon;
 	
 };
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 
@@ -39,13 +41,19 @@ protected:
 	virtual void BeginPlay() override;
 
 protected:
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category=StickyNote)
-	TArray<FStickyNodeInfo> StickyNodes;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category=StickyNote)
+	FStickyNodeInfo StickyNodeInfo;
+
 
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	
+	//广播事件event
+	UFUNCTION(BlueprintCallable)
+	void InvokeMultiDynamicDelegate();
+
+	UFUNCTION(BlueprintCallable)
+	void SetStickyNote(FStickyNodeInfo StickyNodeInfoIns);
 	
 };

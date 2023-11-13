@@ -3,6 +3,12 @@
 
 #include "StickyNodeInfoComponent.h"
 
+#include "UI/MainHUD.h"
+#include "UI/UI_StickyNotePannel.h"
+
+
+
+
 // Sets default values for this component's properties
 UStickyNodeInfoComponent::UStickyNodeInfoComponent()
 {
@@ -21,6 +27,8 @@ void UStickyNodeInfoComponent::BeginPlay()
 
 	// ...
 	
+
+	
 }
 
 
@@ -31,4 +39,19 @@ void UStickyNodeInfoComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 
 	// ...
 }
+
+void UStickyNodeInfoComponent::InvokeMultiDynamicDelegate()
+{
+	
+	UUI_StickyNotePannel* StickyNotePannelInstance = Cast<AMainHUD>(GetWorld()->GetFirstPlayerController()->GetHUD())->StickyNotePannel;
+	FStickyNoteEvent& DynamicEvent =StickyNotePannelInstance->AddMultiDynamicDelegate();
+	DynamicEvent.Broadcast(StickyNodeInfo);
+
+}
+
+void UStickyNodeInfoComponent::SetStickyNote(FStickyNodeInfo StickyNodeInfoIns)
+{	
+	StickyNodeInfo = StickyNodeInfoIns;	
+}
+
 

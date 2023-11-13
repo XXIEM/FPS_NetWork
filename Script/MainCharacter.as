@@ -2,7 +2,7 @@ class AMainCharacter:AFPS_NetworkCharacter
 {
 
 
-    UPROPERTY(DefaultComponent,Attach=CharacterMesh0,AttachSocket = head)
+    UPROPERTY(DefaultComponent,Attach=CharacterMesh0,AttachSocket = camera)
     UCineCameraComponent Camera;
     //default Camera.bUsePawnControlRotation = true;
 
