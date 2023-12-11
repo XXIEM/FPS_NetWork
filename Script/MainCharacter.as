@@ -49,9 +49,9 @@ class AMainCharacter:AFPS_NetworkCharacter
     UUserWidget UI_Relord;
 
     //自身变量
-    float WalkSpeed = 200.0f;
-    float CrouchSpeed = 150.0f;
-    float SprintSpeed = 500.0f;
+    float WalkSpeed = 150.0f;
+    float CrouchSpeed = 100.0f;
+    float SprintSpeed = 300.0f;
     float SlideSpeed = 400.0f;
 
     
@@ -89,6 +89,7 @@ class AMainCharacter:AFPS_NetworkCharacter
     UFUNCTION()//初始化武器
     void InitWeaponBP(TSubclassOf<AFPS_WeaponBase>InWeapon, int Index)
     {
+
         if(ExistGun.Num()<=3)
         {
             // if(HasAuthority())
@@ -102,7 +103,7 @@ class AMainCharacter:AFPS_NetworkCharacter
             ExistGun[Index]=SpawnActor(InWeapon,FVector(0,0,0),FRotator(0,0,0));
             
         }
-  
+    
         ExistGun[CurrentInventoryIndex].ActorScale3D=FVector(1,1,1);
         ExistGun[CurrentInventoryIndex].AttachToComponent(Mesh,n"VB Weapon",EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,true);
         WeaponBoneTrans = Cast<AWeaponBase>(ExistGun[CurrentInventoryIndex]).AimPointTest.GetRelativeTransform();
@@ -122,9 +123,11 @@ class AMainCharacter:AFPS_NetworkCharacter
             }
             
         }
-        
+        SetCharacterArmmedState();
         
     }
+    UFUNCTION(BlueprintEvent)//设置人物武装状态
+    void SetCharacterArmmedState(){}
 
     UFUNCTION()//切换武器
     void SwitchWeaponBP(int Index)

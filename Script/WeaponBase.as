@@ -1,5 +1,6 @@
 class AWeaponBase:AFPS_WeaponBase
 {
+
     UPROPERTY(DefaultComponent)
     USceneComponent Scene;
 
@@ -9,8 +10,8 @@ class AWeaponBase:AFPS_WeaponBase
     UPROPERTY(DefaultComponent,Attach = SkeletalMesh)
     USceneComponent AimPointTest;
 
-    UPROPERTY(DefaultComponent,Attach = SkeletalMesh)
-    USphereComponent Sphere;
+    //UPROPERTY(DefaultComponent,Attach = SkeletalMesh)
+    //USphereComponent Sphere;
     
     UPROPERTY()
     UClass Bullet;
@@ -42,6 +43,60 @@ class AWeaponBase:AFPS_WeaponBase
 
     UPROPERTY()
     float DropAvoidOffsetX;//回落修正X
+
+
+    //---------武器动画部分-------------
+      //人物骨骼武器动画
+        //人物待机
+        UPROPERTY()
+        UAnimSequence CharacterWeaponStandby;
+
+        //人物空仓换弹
+        UPROPERTY()
+        UAnimSequence CharacterEmptyReload;
+
+        //人物非空仓换弹
+        UPROPERTY()
+        UAnimSequence CharacterNorEmptyReload;
+
+        //人物武器检查
+        UPROPERTY()
+        UAnimSequence CharacterWeaponCheck;
+    
+        //人物装备动画
+        UPROPERTY()
+        UAnimSequence CharacterArmmedWeapon;
+
+        //人物解除装备动画
+        UPROPERTY()
+        UAnimSequence CharacterUnArmmedWeapon;
+
+      //武器骨骼武器动画
+        //武器空仓检查
+        UPROPERTY()
+        UAnimSequence WeaponEmptyCheck;
+
+        //武器非空仓检查
+        UPROPERTY()
+        UAnimSequence WeaponNorEmptyCheck;
+
+        //武器空仓换弹
+        UPROPERTY()
+        UAnimSequence WeaponEmptyReload;
+
+        //武器空仓检查
+        UPROPERTY()
+        UAnimSequence WeaponNorEmptyReload;
+
+        //武器非空仓开火
+        UPROPERTY()
+        UAnimSequence WeaponNorEmptyFire;
+
+        //武器空仓开火
+        UPROPERTY()
+        UAnimSequence WeaponEmptyFire;
+
+
 
 
     UFUNCTION(BlueprintEvent)
@@ -127,15 +182,20 @@ class AWeaponBase:AFPS_WeaponBase
                 IgnoreActors.Add(Cast<AActor>(MainCharacter)); 	
                 TArray<EObjectTypeQuery> ObjectTypes;
                 ObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery3);
+                ObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery2);
+                ObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery1);
+                ObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery4);
+
                 
                 
                 FVector StartPoint = MainCharacter.Camera.GetWorldLocation();
-                FVector EndPoint = StartPoint + MainCharacter.Camera.GetForwardVector()*3000.f;
+                FVector EndPoint = StartPoint + MainCharacter.Camera.GetForwardVector()*1000.f;
                 //bool bIsHit = System::LineTraceSingle(SLoc,EndPoint,ETraceTypeQuery::TraceTypeQuery3,false,IgnoreActors,EDrawDebugTrace::ForDuration,FireTraceOutHit,true);
                 bool bIsHit = System::LineTraceSingleForObjects(SLoc,EndPoint,ObjectTypes,false,IgnoreActors,EDrawDebugTrace::ForDuration,FireTraceOutHit,true);
                 if(bIsHit)
                 {
                     System::PrintString(FireTraceOutHit.GetActor().GetName().ToString());
+                    DrawFireResult(FireTraceOutHit);
                 }
                 CurrentBulletNum--;
                 AddRecoil();//添加后坐力
@@ -157,6 +217,9 @@ class AWeaponBase:AFPS_WeaponBase
             StopFire();
         }
     }
+    UFUNCTION(BlueprintEvent)
+    void DrawFireResult(FHitResult TraceHit){}
+
 
     UFUNCTION()
     void Reload()
