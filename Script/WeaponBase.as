@@ -133,7 +133,7 @@ class AWeaponBase:AFPS_WeaponBase
     {
         CurrentBulletNum = WeaponChildStruct.BulletNum;
         MaxCurrentBulletNum = CurrentBulletNum;
-        TotalBulletNum = CurrentBulletNum * 3;
+        TotalBulletNum = CurrentBulletNum * 2;
         
     }
 
@@ -191,25 +191,26 @@ class AWeaponBase:AFPS_WeaponBase
                 FVector StartPoint = MainCharacter.Camera.GetWorldLocation();
                 FVector EndPoint = StartPoint + MainCharacter.Camera.GetForwardVector()*1000.f;
                 //bool bIsHit = System::LineTraceSingle(SLoc,EndPoint,ETraceTypeQuery::TraceTypeQuery3,false,IgnoreActors,EDrawDebugTrace::ForDuration,FireTraceOutHit,true);
-                bool bIsHit = System::LineTraceSingleForObjects(SLoc,EndPoint,ObjectTypes,false,IgnoreActors,EDrawDebugTrace::ForDuration,FireTraceOutHit,true);
+                bool bIsHit = System::LineTraceSingleForObjects(SLoc,EndPoint,ObjectTypes,false,IgnoreActors,EDrawDebugTrace::None,FireTraceOutHit,true);
                 if(bIsHit)
-                {
-                    System::PrintString(FireTraceOutHit.GetActor().GetName().ToString());
+                {   
+                    //System::PrintString(FireTraceOutHit.GetActor().GetName().ToString());
                     DrawFireResult(FireTraceOutHit);
                 }
                 CurrentBulletNum--;
-                AddRecoil();//添加后坐力
-                
+                AddRecoil();
             }
-            else
+            else 
             {
-                RecoilDown();
-                StopUp();
-                StopFire();
-                if(TotalBulletNum!=0)
-                {
-                    CallReloadMontage();
-                }
+                // //RecoilDown();
+                // StopUp();
+                // StopFire();
+                // if(TotalBulletNum!=0)
+                // {
+                //     CallReloadMontage();
+                // }
+                SkeletalMesh.PlayAnimation(WeaponEmptyFire,false);
+                AddEmptyRecoil();
             }
         }
         else 
@@ -219,7 +220,8 @@ class AWeaponBase:AFPS_WeaponBase
     }
     UFUNCTION(BlueprintEvent)
     void DrawFireResult(FHitResult TraceHit){}
-
+    UFUNCTION(BlueprintEvent)
+    void AddEmptyRecoil(){}
 
     UFUNCTION()
     void Reload()
