@@ -15,10 +15,10 @@ class INTERACTIVESYSTEM_API AWindFieldBase : public AFieldSystemActor
 public:
 	// Sets default values for this actor's properties
 	AWindFieldBase();
-	UPROPERTY(meta=(ExposeOnSpawn),EditAnywhere,BlueprintReadWrite)
+	UPROPERTY(meta=(ExposeOnSpawn),EditAnywhere,BlueprintReadWrite,Category="WindFieldBase")
 	TObjectPtr<UPrimitiveComponent> MeshAttached;
 
-	UPROPERTY(meta=(ExposeOnSpawn),EditAnywhere,BlueprintReadWrite)
+	UPROPERTY(meta=(ExposeOnSpawn),EditAnywhere,BlueprintReadWrite,Category="WindFieldBase")
 	FWindFieldGenerationInfo WindFieldGenerationInfo;
 
 
@@ -31,7 +31,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 
-	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
+	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable,Category="WindFieldBase")
 	void AddWindField(UPrimitiveComponent* InMeshAttached,const FWindFieldGenerationInfo& GenerationInfo);
 
 };

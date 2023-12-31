@@ -13,11 +13,11 @@ USTRUCT(BlueprintType)
 struct FWindFieldGenerationInfo
 {
 	GENERATED_BODY()
-	UPROPERTY(BlueprintReadWrite,EditDefaultsOnly)
+	UPROPERTY(BlueprintReadWrite,EditDefaultsOnly,Category="WindFieldGenerationInfo")
 	FName SocketName;
-	UPROPERTY(BlueprintReadWrite,EditDefaultsOnly)
+	UPROPERTY(BlueprintReadWrite,EditDefaultsOnly,Category="WindFieldGenerationInfo")
 	TSubclassOf<AWindFieldBase> SpawnFieldClass;
-	UPROPERTY(BlueprintReadWrite,EditDefaultsOnly)
+	UPROPERTY(BlueprintReadWrite,EditDefaultsOnly,Category="WindFieldGenerationInfo")
 	float VelocityScale = 1.0;
 };
 class AFieldSystemActor;
@@ -36,14 +36,14 @@ protected:
 
 	virtual void InitializeComponent() override;
 public:
-	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable,Category="WindField")
 	void GenerateWindField(TArray<FWindFieldGenerationInfo>& InFieldGenerationInfos,UPrimitiveComponent* InTargetMesh);
 
 protected:
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="WildField")
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="WindField")
 	TArray<FWindFieldGenerationInfo> FieldGenerationInfos;
 
-	UPROPERTY(VisibleDefaultsOnly,BlueprintReadWrite,Category="WildField")
+	UPROPERTY(VisibleDefaultsOnly,BlueprintReadWrite,Category="WindField")
 	TObjectPtr<UPrimitiveComponent> TargetMesh;
 	
 };
